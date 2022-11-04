@@ -7,7 +7,6 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.customitem.CustomItemDefinition;
 import cn.nukkit.item.customitem.ItemCustomTool;
 import cn.nukkit.item.customitem.data.ItemCreativeCategory;
-import cn.nukkit.item.customitem.data.Offset;
 import cn.nukkit.item.customitem.data.RenderOffsets;
 
 

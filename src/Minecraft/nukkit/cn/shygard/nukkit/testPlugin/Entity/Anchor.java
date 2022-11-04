@@ -2,20 +2,15 @@ package Minecraft.nukkit.cn.shygard.nukkit.testPlugin.Entity;
 
 import Minecraft.nukkit.cn.shygard.nukkit.testPlugin.Items.Summon_egg.anchor_information;
 import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.EntityRideable;
 import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.custom.CustomEntityDefinition;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.scheduler.TaskHandler;
 import cn.nukkit.utils.Utils;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static Minecraft.nukkit.cn.shygard.nukkit.testPlugin.Items.Summon_egg.anchor_information.anchor_info;
 
