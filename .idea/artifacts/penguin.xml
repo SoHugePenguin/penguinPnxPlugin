@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="penguin">
+    <output-path>$PROJECT_DIR$/../../server_test/plugins</output-path>
+    <root id="archive" name="penguin.jar">
+      <element id="module-output" name="IDEA项目(同步)" />
+    </root>
+  </artifact>
+</component>
