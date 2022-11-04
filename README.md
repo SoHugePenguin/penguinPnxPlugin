@@ -1,4 +1,4 @@
-# nkx_penguin_plugin
-PowerNukkitX Plugin project
-
-# au is pig
+·PowerNukkitX Minecraft Plugin
+·Personal Learn Plugin
+·This is my long-term updated plug-in
+·长期更新
