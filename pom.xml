@@ -17,7 +17,7 @@
         <dependency>
             <groupId>cn.powernukkitx</groupId>
             <artifactId>powernukkitx</artifactId>
-            <version>1.19.40-r2</version>
+            <version>1.19.40-r3</version>
             <scope>system</scope>
             <systemPath>"F:\server_test\powernukkitx-1.19.40-r2-dev-only.jar"</systemPath>
         </dependency>
