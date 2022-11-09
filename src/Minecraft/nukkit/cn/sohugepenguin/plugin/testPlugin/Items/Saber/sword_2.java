@@ -1,12 +1,15 @@
 package Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Saber;
 
 import cn.nukkit.blockstate.BlockState;
+import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.customitem.CustomItemDefinition;
 import cn.nukkit.item.customitem.ItemCustomTool;
 import cn.nukkit.item.customitem.data.ItemCreativeCategory;
 import cn.nukkit.item.customitem.data.Offset;
 import cn.nukkit.item.customitem.data.RenderOffsets;
+
+import java.util.List;
 
 public class sword_2 extends ItemCustomTool {
     public sword_2() {
@@ -19,6 +22,9 @@ public class sword_2 extends ItemCustomTool {
                 .toolBuilder(this, ItemCreativeCategory.EQUIPMENT)
                 .speed(10)
                 .addExtraBlockTag(BlockState.of("minecraft:web").getBlock(), 15)
+                .addRepairItems(List.of(Item.fromString("minecraft:amethyst_shard")), 100)
+                .addRepairItems(List.of(Item.fromString("yes:amethyst_spear")), 400)
+                .creativeGroup("itemGroup.name.sword")
                 .allowOffHand(false)
                 .handEquipped(true)
                 .foil(false)
