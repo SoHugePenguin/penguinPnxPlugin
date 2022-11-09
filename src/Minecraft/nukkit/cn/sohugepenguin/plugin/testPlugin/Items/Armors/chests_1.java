@@ -36,6 +36,7 @@ public class chests_1 extends ItemCustomArmor{
     }
 
     @Override
+    //耐久度
     public int getMaxDurability() {
         return 295;
     }
