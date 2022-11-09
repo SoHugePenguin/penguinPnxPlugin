@@ -4,6 +4,10 @@ import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Blocks.*;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Entity.Anchor;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Entity.BaseNpc;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Entity.Car1;
+import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Armor.boot_1;
+import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Armor.chest_1;
+import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Armor.helmet_1;
+import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Armor.legging_1;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Custom_Pickaxe;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Edibles.Fire_Pepper_Item;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Saber.spear_1;
@@ -86,7 +90,7 @@ public class Main_PluginBase extends PluginBase implements Listener {
                 Entity.registerCustomEntity(new CustomClassEntityProvider(Anchor.def , Anchor.class));
                 Item.registerCustomItem(List.of(Custom_Pickaxe.class , TheWorld_Menu_Item.class,
                         Fire_Pepper_Item.class , BuildGod_Item.class , sword_1.class , sword_2.class , spear_1.class ,
-                        anchor_egg.class
+                        anchor_egg.class , helmet_1.class , legging_1.class , boot_1.class , chest_1.class
                 ));
                 Block.registerCustomBlock(List.of(test_slab.class , block1.class, block2.class, block3.class, block4.class,
                         block5.class, block6.class, block7.class, block8.class, block9.class, block10.class,
