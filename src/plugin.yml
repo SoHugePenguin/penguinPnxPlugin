@@ -1,5 +1,5 @@
 name: Penguin_Plugin_1
-main: Minecraft.nukkit.cn.shygard.nukkit.testPlugin.Main_PluginBase
+main: Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Main_PluginBase
 version: 0. 0. 3
 api: [1.0.9]
 
