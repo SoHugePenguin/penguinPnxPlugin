@@ -14,7 +14,7 @@ public class WorldMenuWindow extends FormWindowSimple {
         super("§l§6§ka§ca§ba§da§aa§4a§7a§1a §r§m§g| WORLD MENU |§l§6§ka§1a§7a§aa§da§ba§ca§6a", "§l§a世界时间：" + date_show + " §l§6我的世界、无尽可能！");
     }
 
-    public static FormWindowSimple getWindowSimple(Player p) {
+    public static void getWindowSimple(Player p) {
         FormWindowSimple windowSimple = new WorldMenuWindow();
         windowSimple.addButton(new ElementButton("§a传送系统", new ElementButtonImageData("path", "textures/ui/Teleport")));
         windowSimple.addButton(new ElementButton("§6家园系统", new ElementButtonImageData("path", "textures/ui/update_world_chunks")));
@@ -26,6 +26,6 @@ public class WorldMenuWindow extends FormWindowSimple {
             windowSimple.addButton(new ElementButton("§o§6建筑存储器", new ElementButtonImageData("path", "textures/ui/build")));
             windowSimple.addButton(new ElementButton("§o§6NPC生成器", new ElementButtonImageData("path", "textures/ui/book2")));
         }
-        return windowSimple;
+        p.showFormWindow(windowSimple);
     }
 }

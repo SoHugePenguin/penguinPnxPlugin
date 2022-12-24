@@ -15,6 +15,8 @@ import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Setting.Setti
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Shop.Shop;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Socail.Social_Contact;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Teleport.Teleport_Menu;
+import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Teleport.Worlds_teleport;
+import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.WorldMenuWindow;
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.event.EventHandler;
@@ -26,12 +28,14 @@ import cn.nukkit.form.window.FormWindow;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.form.window.FormWindowSimple;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
 import cn.nukkit.nbt.tag.CompoundTag;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Main_PluginBase.*;
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Build_Item_Win.FillType.CommonFill.common_fill;
@@ -61,7 +65,6 @@ import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Home.C
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Home.Home.OpHomeMenu;
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Home.HomeList.Home_List;
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Home.HomeOpMenu.getWindowHomeOpMenu;
-import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Home.Managing_Do.Managing;
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Home.Managing_Homes.Managing_List;
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Home.MyHome.MyHomeTest;
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Personal.Personal_System.getWindowPersonal_System;
@@ -79,6 +82,7 @@ import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Settin
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Shop.Shop.getWindowShop;
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Socail.Social_Contact.getWindowSocial_Contact;
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Teleport.Teleport_Menu.getWindowTeleport_Menu;
+import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Teleport.Worlds_teleport.WorldTeleport;
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.WorldMenuWindow.getWindowSimple;
 
 //监听事件严禁加static，否则崩溃！
@@ -93,7 +97,7 @@ public class ServerListener implements Listener {
     }
 
     @EventHandler
-    public void Damage_Test(EntityDamageByEntityEvent event) {
+    public void Damage_Test(@NotNull EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player player) {
             double damage = 0.0d;
             String onGround = "";
@@ -107,14 +111,12 @@ public class ServerListener implements Listener {
             if (damage < 0.01) {
                 damage = 0.0d;
             }
-//            player.addEffect((new Effect(1, "test", 0, 0, 0, false)).setDuration(20).setAmplifier(5).setAmbient(true));
-//            event.getDamager().sendPotionEffects(player);
             player.sendActionBar("§l§c" + onGround + " §b- " + damage + "§4♥");
         }
     }
 
     @EventHandler
-    public void PlayerJoin(PlayerJoinEvent event) {
+    public void PlayerJoin(@NotNull PlayerJoinEvent event) {
         Player p = event.getPlayer();
         Main_PluginBase.access(p);
 
@@ -134,30 +136,47 @@ public class ServerListener implements Listener {
         }
         p.sendToast("\uE100§gApotheosis Ultramarine\uE100-->§b极海群青", "\uE103\uE100§m§6欢迎来到鹅鹅服务器§c玩法：§b空岛生存§r/§a世界经济§r/§c趣味游戏§r/§d建筑休闲§r等；\uE102\uE103");
 
-//        玩家进入后即生成一个空对象（创世神）
+        //玩家进入后即生成一个空对象（创世神）
         build_map.put(p.getName(), new ArrayList<>());
         undo_map.put(p.getName(), new ArrayList<>());
+
+        //加入游戏传送大厅
+        p.teleport(p.getServer().getDefaultLevel().getSpawnLocation());
+    }
+
+    @EventHandler
+    public void PlayerDieTeleport(@NotNull PlayerDeathEvent event) {
+        //死亡一律传送主世界大厅
+        Player p = event.getEntity().getPlayer();
+        p.setSpawn(p.getServer().getDefaultLevel().getSpawnLocation());
+        p.teleport(p.getServer().getDefaultLevel().getSpawnLocation());
     }
 
     @EventHandler
 //    物品互动识别
-    public void RightClickTest(PlayerInteractEvent event) {
+    public void RightClickTest(@NotNull PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Block target = event.getBlock();
+        Item item = event.getItem();
 
-        if (Objects.requireNonNull(event.getItem()).getNamespaceId().equals("np:world_menu") &&
-                event.getAction().toString().contains("RIGHT_CLICK_AIR")) {
-            player.getLevel().addSound(player, Sound.BREAK_DIRT_WITH_ROOTS);
-            player.showFormWindow(getWindowSimple(player));
+        //NullPointerException
+        if (item == null) {
+            return;
         }
 
-        if (Objects.requireNonNull(event.getItem()).getNamespaceId().equals("np:build_item") &&
+        if (item.getNamespaceId().equals("np:world_menu") &&
+                event.getAction().toString().contains("RIGHT_CLICK_AIR")) {
+            player.getLevel().addSound(player, Sound.BREAK_DIRT_WITH_ROOTS);
+            getWindowSimple(player);
+        }
+
+        if (item.getNamespaceId().equals("np:build_item") &&
                 (event.getAction().toString().contains("RIGHT_CLICK") ||
                         event.getAction().toString().contains("LEFT_CLICK")) &&
                 player.getLoginChainData().getDeviceOS() != 7) {
 //            移动端
             WoodAxe.AddVector(target, player);
-        } else if (Objects.requireNonNull(event.getItem()).getNamespaceId().equals("np:build_item") &&
+        } else if (item.getNamespaceId().equals("np:build_item") &&
                 event.getAction().toString().contains("LEFT_CLICK") &&
                 player.getLoginChainData().getDeviceOS() == 7) {
 //            PC端
@@ -166,7 +185,7 @@ public class ServerListener implements Listener {
     }
 
     @EventHandler
-    public void wasd_test(DataPacketReceiveEvent event) {
+    public void wasd_test(@NotNull DataPacketReceiveEvent event) {
 //坐骑前后按键判定（赛车）
         if (event.getPacket().offset == 30 &&
                 event.getPlayer().riding != null &&
@@ -209,13 +228,13 @@ public class ServerListener implements Listener {
     @EventHandler
 
     //玩家退出事件
-    public void ExitGameEvent(PlayerQuitEvent event) {
+    public void ExitGameEvent(@NotNull PlayerQuitEvent event) {
         Player p = event.getPlayer();
         p.removeTag("noUseStab");
     }
 
     @EventHandler
-    public void ChatSetting(PlayerChatEvent event) {
+    public void ChatSetting(@NotNull PlayerChatEvent event) {
         Player p = event.getPlayer();
         String is_op = "§b<Player>";
         if (p.isOp()) is_op = "§6<管理>";
@@ -225,7 +244,7 @@ public class ServerListener implements Listener {
     }
 
     @EventHandler
-    public void Build_Item_Menu(PlayerFormRespondedEvent event) {
+    public void Build_Item_Menu(@NotNull PlayerFormRespondedEvent event) {
         Player p = event.getPlayer();
         if (!(event.getWindow().getResponse() == null) && event.getWindow() instanceof FormWindowSimple simple) {
             int page = simple.getResponse().getClickedButtonId();
@@ -388,14 +407,14 @@ public class ServerListener implements Listener {
     }
 
     @EventHandler
-    public void Back(PlayerFormRespondedEvent e) {
+    public void Back(@NotNull PlayerFormRespondedEvent e) {
         Player p = e.getPlayer();
         if (!(e.getWindow().getResponse() == null) && e.getWindow() instanceof FormWindowSimple w) {
             if ((w instanceof Home || w instanceof Personal_System ||
                     w instanceof opSaveBuilder || w instanceof Setting || w instanceof Shop ||
                     w instanceof Social_Contact || w instanceof Teleport_Menu || w instanceof Npc_Menu) &&
                     w.getResponse().getClickedButton().getText().equals("返回")) {
-                p.showFormWindow(getWindowSimple(p));
+                getWindowSimple(p);
             } else if ((w instanceof MyHome || w instanceof HomeOpMenu || w instanceof HomeList) &&
                     w.getResponse().getClickedButton().getText().equals("返回")) {
                 p.showFormWindow(OpHomeMenu(p));
@@ -406,13 +425,13 @@ public class ServerListener implements Listener {
     }
 
     @EventHandler
-    public void onWindowsListener(PlayerFormRespondedEvent event) {
+    public void onWindowsListener(@NotNull PlayerFormRespondedEvent event) {
         int page;
         Player p = event.getPlayer();
-        if (!(event.getWindow().getResponse() == null) && event.getWindow() instanceof FormWindowSimple simple) {
+        if (event.getWindow().getResponse() != null && event.getWindow() instanceof FormWindowSimple simple) {
             page = simple.getResponse().getClickedButtonId();
             FormWindow window = event.getWindow();
-            if (window.toString().contains("WorldMenuWindow")) {
+            if (window instanceof WorldMenuWindow) {
                 switch (page) {
                     case 0 -> p.showFormWindow(getWindowTeleport_Menu());
                     case 1 -> p.showFormWindow(OpHomeMenu(p));
@@ -431,7 +450,31 @@ public class ServerListener implements Listener {
                         p.sendToast("§6[传送]", "§g" + p.getName() + ",§a欢迎回到主世界！");
                         p.teleport(p.getServer().getDefaultLevel().getSpawnLocation());
                     }
-                    case 1 -> p.sendMessage("企鹅开发中，呜呜呜");
+                    case 1 -> WorldTeleport(p);
+                }
+            }
+
+            if (event.getFormID() == Worlds_teleport.WORLDS) {
+                FormWindowSimple form = (FormWindowSimple) window;
+                //颜色符号需过滤
+                String worldName = form.getResponse().getClickedButton().getText().substring(2);
+                //如果世界没有加载，则载入
+                if (!p.getServer().isLevelLoaded(worldName)) {
+                    p.getServer().loadLevel(worldName);
+                }
+                Level level = p.getServer().getLevelByName(worldName);
+                if (level != null) {//颜色符号需过滤
+                    Position position = level.getSpawnLocation();
+                    //修复传送后卡地下
+                    while (true) {
+                        if (level.getBlock(position).getId() == Block.AIR) {
+                            break;
+                        } else {
+                            position.y++;
+                        }
+                    }
+                    p.teleport(position);
+                    p.sendToast("§e[传送]", "    §b你已传送至 " + level.getName());
                 }
             }
 
@@ -457,7 +500,7 @@ public class ServerListener implements Listener {
                 }
             } else if (window instanceof HomeOpMenu) {
                 if (page == 0) {
-                    p.showFormWindow(Home_List(p));
+                    Home_List(p);
                 }
             } else if (window instanceof HomeList) {
                 if (!((HomeList) window).getButtons().get(page).getText().contains("返回")) {
@@ -466,7 +509,7 @@ public class ServerListener implements Listener {
             } else if (window instanceof Managing_Homes) {
                 switch (page) {
                     case 0 -> {
-                        Managing(p, ((Managing_Homes) window).getTitle());
+                        Managing_Homes.loadWorld(p, ((Managing_Homes) window).getTitle());
                         p.sendToast("§6[传送]", "§c尊敬的管理员，欢迎来到§a" + ((Managing_Homes) window).getTitle());
                     }
                     case 1 -> p.sendMessage("还在做。。");
@@ -499,7 +542,7 @@ public class ServerListener implements Listener {
     }
 
     @EventHandler
-    public void data_Listener(PlayerFormRespondedEvent dataListener) throws IOException {
+    public void data_Listener(@NotNull PlayerFormRespondedEvent dataListener) throws IOException {
         Player p = dataListener.getPlayer();
         if (!(dataListener.getWindow().getResponse() == null) && dataListener.getWindow() instanceof FormWindowSimple simple) {
             FormWindow window = dataListener.getWindow();
@@ -580,7 +623,7 @@ public class ServerListener implements Listener {
     }
 
     @EventHandler
-    public void Npc_Listener(PlayerFormRespondedEvent NpcListener) throws IOException {
+    public void Npc_Listener(@NotNull PlayerFormRespondedEvent NpcListener) throws IOException {
         Player p = NpcListener.getPlayer();
         if (!(NpcListener.getWindow().getResponse() == null) && NpcListener.getWindow() instanceof FormWindowSimple simple) {
             int page;
@@ -613,7 +656,7 @@ public class ServerListener implements Listener {
         }
     }
 
-    private String get_data(String text) {
+    private String get_data(@NotNull String text) {
         String New_File_Name = "";
         for (int i = 1; i < text.length() - 1; i++) {
             int intIndex = text.substring(0, i).indexOf("}");

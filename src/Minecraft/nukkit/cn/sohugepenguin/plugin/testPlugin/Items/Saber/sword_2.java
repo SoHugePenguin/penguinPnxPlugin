@@ -51,7 +51,7 @@ public class sword_2 extends ItemCustomTool {
 
     @Override
     public int getAttackDamage() {
-        return 3;
+        return 9;
     }
 
     @Override

@@ -11,8 +11,8 @@ public class Teleport_Menu extends FormWindowSimple {
 
     public static FormWindowSimple getWindowTeleport_Menu() {
         FormWindowSimple home = new Teleport_Menu();
-        home.addButton(new ElementButton("回到主世界出生地", new ElementButtonImageData("path", "textures/ui/icon_spring")));
-        home.addButton(new ElementButton("玩家互传", new ElementButtonImageData("path", "textures/ui/promo_creeper")));
+        home.addButton(new ElementButton("§b回到主世界出生地", new ElementButtonImageData("path", "textures/ui/icon_spring")));
+        home.addButton(new ElementButton("§6多世界传送", new ElementButtonImageData("path", "textures/ui/promo_creeper")));
         home.addButton(new ElementButton("返回", new ElementButtonImageData("path", "textures/ui/back")));
         return home;
     }

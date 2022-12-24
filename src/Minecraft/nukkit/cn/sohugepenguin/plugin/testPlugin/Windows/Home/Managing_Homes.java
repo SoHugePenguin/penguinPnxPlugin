@@ -1,5 +1,6 @@
 package Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Home;
 
+import cn.nukkit.Player;
 import cn.nukkit.form.element.ElementButton;
 import cn.nukkit.form.element.ElementButtonImageData;
 import cn.nukkit.form.window.FormWindowSimple;
@@ -18,5 +19,12 @@ public class Managing_Homes extends FormWindowSimple {
         home.addButton(new ElementButton("§d删除该家园 §o§c(§4严禁乱用§c)", new ElementButtonImageData("path", "textures/ui/icon_trash")));
         home.addButton(new ElementButton("返回", new ElementButtonImageData("path", "textures/ui/back")));
         return home;
+    }
+
+    public static void loadWorld(Player p, String home) {
+        if (!p.getServer().isLevelLoaded(home)) {
+            p.getServer().loadLevel(home);
+        }
+        p.teleport(p.getServer().getLevelByName(home).getSpawnLocation());
     }
 }

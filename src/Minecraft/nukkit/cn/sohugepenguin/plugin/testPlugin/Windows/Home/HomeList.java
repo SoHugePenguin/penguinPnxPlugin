@@ -12,7 +12,7 @@ public class HomeList extends FormWindowSimple {
         super("OP·家园管理", "尊敬的管理员\n你正在管理服务器所有已有家园维度。请选择你的操作；");
     }
 
-    public static FormWindowSimple Home_List(Player p) {
+    public static void Home_List(Player p) {
         FormWindowSimple home = new HomeList();
         File[] listFiles = new File("worlds").listFiles();
         assert listFiles != null;
@@ -22,6 +22,6 @@ public class HomeList extends FormWindowSimple {
             }
         }
         home.addButton(new ElementButton("返回", new ElementButtonImageData("path", "textures/ui/back")));
-        return home;
+        p.showFormWindow(home);
     }
 }

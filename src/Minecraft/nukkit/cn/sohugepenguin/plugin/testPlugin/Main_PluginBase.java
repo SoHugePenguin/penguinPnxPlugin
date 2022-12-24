@@ -17,6 +17,7 @@ import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Summon_egg.anch
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Tools.BuildGod_Item;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Tools.TheWorld_Menu_Item;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Build_Item_Win.Coordinate_sorting;
+import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Teleport.Worlds_teleport;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.block.Block;
@@ -36,6 +37,7 @@ import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.scoreboard.data.DisplaySlot;
 import cn.nukkit.scoreboard.scoreboard.Scoreboard;
 import cn.nukkit.utils.Config;
+import cn.nukkit.utils.TextFormat;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -43,7 +45,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Tool.ball_tool.ball;
@@ -105,18 +106,7 @@ public class Main_PluginBase extends PluginBase implements Listener {
     }
 
     public void onEnable() {
-//        ZlibThreadLocal zlibThreadLocal = new ZlibThreadLocal();
-
-        File[] listFiles = new File("worlds").listFiles();
-        //导入新世界
-        assert listFiles != null;
-        for (File wFolder : listFiles) {
-            if (wFolder.isDirectory() && !getServer().isLevelLoaded(wFolder.getName())) {
-                if (!wFolder.getName().contains("的家园")) {
-                    getServer().loadLevel(wFolder.getName());
-                }
-            }
-        }
+        //世界不用就不加载，减少负载
         File BaseFile = new File("penguin_plugin");
         if (!BaseFile.exists()) {
             BaseFile.mkdirs();
@@ -185,7 +175,6 @@ public class Main_PluginBase extends PluginBase implements Listener {
         npc_config.save();
 
         this.getServer().getScheduler().scheduleRepeatingTask(this, () -> {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
             Date date = new Date(System.currentTimeMillis());
             date_show = date.toString();
             int data_test = 0;
@@ -231,7 +220,7 @@ public class Main_PluginBase extends PluginBase implements Listener {
                         ID_DATA = 0;
                     } else {
                         TargetBlock = p.getTargetBlock(5).getName();
-                        ID = p.getTargetBlock(5).getBlockId();
+                        ID = p.getTargetBlock(5).getBlock().getId();
                         ID_DATA = p.getTargetBlock(5).getExactIntStorage();
                     }
 
@@ -326,211 +315,219 @@ public class Main_PluginBase extends PluginBase implements Listener {
                 }
             }
 
-//            mapTest();
-
         }, 10);
     }
 
-    public boolean onCommand(CommandSender sender, @NotNull Command command, String label, String[] args) {
-        Player p = (Player) sender;
-        if (command.getName().equals("get")) {
-            boolean NewPlayer = true;
-            if (args.length == 1 && args[0].equals("1")) {
-                HashSet<String> achievements = p.achievements;
-                String[] NewList = achievements.toArray(new String[0]);
-                int var10 = NewList.length;
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, String label, String[] args) {
+        if (sender.isPlayer()) {
+            Player p = (Player) sender;
+            if (command.getName().equals("get")) {
+                boolean NewPlayer = true;
+                if (args.length == 1 && args[0].equals("1")) {
+                    HashSet<String> achievements = p.achievements;
+                    String[] NewList = achievements.toArray(new String[0]);
+                    int var10 = NewList.length;
 
-                int j;
-                for (j = 0; j < var10; ++j) {
-                    String s = NewList[j];
-                    if (s.equals("我出生辣！")) {
-                        p.sendMessage("§c§m<Server>您已经领取过新人礼包了,莫贪！");
-                        NewPlayer = false;
-                        break;
-                    }
-                }
-
-                if (NewPlayer) {
-                    p.achievements.add("我出生辣！");
-                    SayCommand.broadcastCommandMessage(p, "§a领取了新人礼包");
-                    StringBuilder item_all_name = new StringBuilder(" ");
-                    int[] item_id = new int[]{46, 1, 267, 1, 298, 1, 299, 1, 300, 1, 301, 1, 322, 3, 426, 1};
-
-                    for (j = 0; j < item_id.length; j += 2) {
-                        Item item = Item.fromString(String.valueOf(item_id[j]));
-                        item.setCount(item_id[j + 1]);
-                        p.getInventory().addItem(item.clone());
-                        item_all_name.insert(0, "§b§m" + item.getName() + "x" + item.getCount() + "\n");
+                    int j;
+                    for (j = 0; j < var10; ++j) {
+                        String s = NewList[j];
+                        if (s.equals("我出生辣！")) {
+                            p.sendMessage("§c§m<Server>您已经领取过新人礼包了,莫贪！");
+                            NewPlayer = false;
+                            break;
+                        }
                     }
 
-                    p.sendMessage("§d§m" + date_show + "\n§6§m" + p.getName() + ", 您获得了：");
-                    p.sendMessage(String.valueOf(item_all_name));
+                    if (NewPlayer) {
+                        p.achievements.add("我出生辣！");
+                        SayCommand.broadcastCommandMessage(p, "§a领取了新人礼包");
+                        StringBuilder item_all_name = new StringBuilder(" ");
+                        int[] item_id = new int[]{46, 1, 267, 1, 298, 1, 299, 1, 300, 1, 301, 1, 322, 3, 426, 1};
+
+                        for (j = 0; j < item_id.length; j += 2) {
+                            Item item = Item.fromString(String.valueOf(item_id[j]));
+                            item.setCount(item_id[j + 1]);
+                            p.getInventory().addItem(item.clone());
+                            item_all_name.insert(0, "§b§m" + item.getName() + "x" + item.getCount() + "\n");
+                        }
+
+                        p.sendMessage("§d§m" + date_show + "\n§6§m" + p.getName() + ", 您获得了：");
+                        p.sendMessage(String.valueOf(item_all_name));
+                    }
+                } else {
+                    sender.sendMessage("§m§6欢迎来到企鹅的服务器！\n§b输入/get 1获取新人大礼包奥！\nQQ群:793186488");
                 }
-            } else {
-                sender.sendMessage("§m§6欢迎来到企鹅的服务器！\n§b输入/get 1获取新人大礼包奥！\nQQ群:793186488");
             }
-        }
 
-        if (command.getName().equals("do")) {
-            p.showFormWindow(getBuildWindow());
-        }
-
-        if (command.getName().equals("biomes")) {
-            //player.onChunkChanged(FullChunk c)  SuperIce666推荐，发送区块更新到玩家；
-            int x = p.getChunkX(), z = p.getChunkZ();
-            if (args.length == 1 && !Objects.equals(args[0], "list")) {
-                byte id = Byte.parseByte(args[0]);
-                for (int i = 0; i < 16; i++) {
-                    for (int j = 0; j < 16; j++) {
-                        Objects.requireNonNull(p.getChunk()).setBiome(i, j, Biome.getBiome(id));
-                        p.getChunk().setBiomeId(i, j, id);
-                    }
-                }
-//                    p.getServer().getLevel(p.getLevel().getId()).generateChunk(x,z);  //重载区块
-                p.onChunkChanged(p.getChunk());
-            } else if (args.length == 1 && args[0].equals("list")) {
-                p.sendMessage(Arrays.toString(Objects.requireNonNull(p.getChunk()).getBiomeIdArray()));
-                StringBuilder BiomesList = new StringBuilder();
-                for (int i = 0; i < Biome.unorderedBiomes.size(); i++) {
-                    BiomesList.append("§6[").append(i).append("]§a").append(Biome.getBiome(i).getName());
-                }
-                p.sendMessage("§b群系列表：\n" + BiomesList);
-                p.sendMessage("你所在块的群系为： " + Biome.getBiome(p.getLevel().getBiomeId(x, z)).getName());
-            } else
-                p.sendMessage("§a/Biomes list 列出已有全部群系类型ID\n§b/Biomes [ID] 将你所在的区块改为对应id类型的群系");
-        }
-
-        if (command.getName().equals("round")) {
-            if (args.length == 1) {
-                p.sendMessage("你好像没有写要填充什么方块吗？仔细看看哦");
-            } else if (args.length > 1) {
-                p.sendMessage("§c严禁使用下落方块，掉落物，液体！否则立马删除OP!不管你是谁！");
-                round(p, args);
-            } else
-                p.sendMessage("画圆指令用法：/round 半径(整数，必选) 方块ID(必选) 方块特殊值（可选）keep(保持，可选，使用时，方块特殊值必须要写)");
-        }
-
-        if (command.getName().equals("ball")) {
-            if (args.length == 1) {
-                p.sendMessage("你好像没有写要填充什么方块吗？仔细看看哦");
-            } else if (args.length > 1) {
-                p.sendMessage("§c严禁使用下落方块，掉落物，液体！否则立马删除OP!不管你是谁！");
-                SayCommand.broadcastCommandMessage(sender, "§a" + p.getName() + "使用了" + Arrays.toString(args));
-                ball(p, args);
-            } else
-                p.sendMessage("画球指令用法：/ball 半径(整数，必选) 方块ID(必选) 方块特殊值（可选）keep(保持，可选，使用时，方块特殊值必须要写)");
-        }
-
-        if (command.getName().equals("zoom") && args.length == 2) {
-            p = this.getServer().getPlayer(args[0]);
-            float a = Float.parseFloat(args[1]);
-            if ((double) a >= 0.5 && a <= 3.0F) {
-                p.setScale(a);
-                sender.sendMessage("§a§mSuccess!");
-                p.sendMessage("§b§m你的身体已被缩放！");
-            } else {
-                sender.sendMessage(date_show + "§m§c<Error>数值只能在0.5~3之间！");
+            if (command.getName().equals("do")) {
+                p.showFormWindow(getBuildWindow());
             }
-        }
 
-        if (command.getName().equals("clear")) {
-            if (args.length == 0) {
-                p.getInventory().clearAll();
-                p.sendMessage("§b背包已清空！");
-            } else if (args.length == 1) {
+            if (command.getName().equals("biomes")) {
+                //player.onChunkChanged(FullChunk c)  发送区块更新到玩家；
+                int x = p.getChunkX(), z = p.getChunkZ();
+                if (args.length == 1 && !Objects.equals(args[0], "list")) {
+                    byte id = Byte.parseByte(args[0]);
+                    for (int i = 0; i < 16; i++) {
+                        for (int j = 0; j < 16; j++) {
+                            Objects.requireNonNull(p.getChunk()).setBiome(i, j, Biome.getBiome(id));
+                            p.getChunk().setBiomeId(i, j, id);
+                        }
+                    }
+                    //p.getServer().getLevel(p.getLevel().getId()).generateChunk(x,z);  //重载区块
+                    p.onChunkChanged(p.getChunk());
+                } else if (args.length == 1 && args[0].equals("list")) {
+                    p.sendMessage(Arrays.toString(Objects.requireNonNull(p.getChunk()).getBiomeIdArray()));
+                    StringBuilder BiomesList = new StringBuilder();
+                    for (int i = 0; i < Biome.unorderedBiomes.size(); i++) {
+                        BiomesList.append("§6[").append(i).append("]§a").append(Biome.getBiome(i).getName());
+                    }
+                    p.sendMessage("§b群系列表：\n" + BiomesList);
+                    p.sendMessage("你所在块的群系为： " + Biome.getBiome(p.getLevel().getBiomeId(x, z)).getName());
+                } else
+                    p.sendMessage("§a/Biomes list 列出已有全部群系类型ID\n§b/Biomes [ID] 将你所在的区块改为对应id类型的群系");
+            }
+
+            if (command.getName().equals("round")) {
+                if (args.length == 1) {
+                    p.sendMessage("你好像没有写要填充什么方块吗？仔细看看哦");
+                } else if (args.length > 1) {
+                    p.sendMessage("§c严禁使用下落方块，掉落物，液体！否则立马删除OP!不管你是谁！");
+                    round(p, args);
+                } else
+                    p.sendMessage("画圆指令用法：/round 半径(整数，必选) 方块ID(必选) 方块特殊值（可选）keep(保持，可选，使用时，方块特殊值必须要写)");
+            }
+
+            if (command.getName().equals("ball")) {
+                if (args.length == 1) {
+                    p.sendMessage("你好像没有写要填充什么方块吗？仔细看看哦");
+                } else if (args.length > 1) {
+                    p.sendMessage("§c严禁使用下落方块，掉落物，液体！否则立马删除OP!不管你是谁！");
+                    SayCommand.broadcastCommandMessage(sender, "§a" + p.getName() + "使用了" + Arrays.toString(args));
+                    ball(p, args);
+                } else
+                    p.sendMessage("画球指令用法：/ball 半径(整数，必选) 方块ID(必选) 方块特殊值（可选）keep(保持，可选，使用时，方块特殊值必须要写)");
+            }
+
+            if (command.getName().equals("zoom") && args.length == 2) {
                 p = this.getServer().getPlayer(args[0]);
-                if (p == sender) {
+                float a = Float.parseFloat(args[1]);
+                if ((double) a >= 0.5 && a <= 3.0F) {
+                    p.setScale(a);
+                    sender.sendMessage("§a§mSuccess!");
+                    p.sendMessage("§b§m你的身体已被缩放！");
+                } else {
+                    sender.sendMessage(date_show + "§m§c<Error>数值只能在0.5~3之间！");
+                }
+            }
+
+            if (command.getName().equals("clear")) {
+                if (args.length == 0) {
                     p.getInventory().clearAll();
-                    sender.sendMessage("§a§m Success");
                     p.sendMessage("§b背包已清空！");
-                } else if (p == null) {
-                    sender.sendMessage("§m§c<Error>未查找到该名字对应的在线玩家！");
+                } else if (args.length == 1) {
+                    p = this.getServer().getPlayer(args[0]);
+                    if (p == sender) {
+                        p.getInventory().clearAll();
+                        sender.sendMessage("§a§m Success");
+                        p.sendMessage("§b背包已清空！");
+                    } else if (p == null) {
+                        sender.sendMessage("§m§c<Error>未查找到该名字对应的在线玩家！");
+                    } else {
+                        p.getInventory().clearAll();
+                        sender.sendMessage("§a§m Success");
+                        p.sendMessage("§b你的背包已被" + sender.getName() + " 清空！");
+                    }
                 } else {
-                    p.getInventory().clearAll();
-                    sender.sendMessage("§a§m Success");
-                    p.sendMessage("§b你的背包已被" + sender.getName() + " 清空！");
+                    sender.sendMessage("§d§m/clear  清理自己背包\n/clear [name] 清理指定玩家背包");
                 }
-            } else {
-                sender.sendMessage("§d§m/clear  清理自己背包\n/clear [name] 清理指定玩家背包");
-            }
-        }
-
-        if (command.getName().equals("ping")) {
-            p = (Player) sender;
-            String device;
-            if (args.length == 0) {
-                if (p.getLoginChainData().getDeviceOS() == 7) {
-                    device = "PC端";
-                } else {
-                    device = "移动端";
-                }
-                p.sendMessage("§b§mPort: " + p.getPort() + "§a\nPing: " + p.getPing() + "§6ms\n你正在 " +
-                        device + " 上玩我的世界！");
-            } else {
-                p.sendMessage("§m/ping");
             }
 
-            Car1 anchor = new Car1(p.getLocation().getChunk(), Entity.getDefaultNBT(p.getPosition())
-                    .putString("account", "null")
-                    .putCompound("Skin", (new CompoundTag()))
-            );
-            anchor.spawnToAll();
-            p.sendMessage(String.valueOf(anchor_information.name));
-            p.sendMessage(String.valueOf(anchor_information.vector3));
-        }
+            if (command.getName().equals("ping")) {
+                p = (Player) sender;
+                String device;
+                if (args.length == 0) {
+                    if (p.getLoginChainData().getDeviceOS() == 7) {
+                        device = "PC端";
+                    } else {
+                        device = "移动端";
+                    }
+                    p.sendMessage("§b§mPort: " + p.getPort() + "§a\nPing: " + p.getPing() + "§6ms\n你正在 " +
+                            device + " 上玩我的世界！");
+                } else {
+                    p.sendMessage("§m/ping");
+                }
 
-        if (command.getName().equals("achievement")) {
-            p = (Player) sender;
-            if (args.length == 0) {
-                p.sendMessage("§g§m你的成就列表:\n" + ((Player) sender).achievements);
-            } else if (args.length == 2 && args[1].equals("clear")) {
-                p = this.getServer().getPlayer(args[0]);
-                if (p == sender) {
-                    p.achievements.clear();
-                    p.sendMessage("§b成就列表已清空！");
-                } else if (p == null) {
-                    sender.sendMessage("§m§c" + date_show + "<Error>未查找到该名字对应的在线玩家！");
-                } else {
-                    p.achievements.clear();
-                    sender.sendMessage("§a§m Success");
-                    p.sendMessage("§b你的成就列表已被 " + sender.getName() + " 清空！");
-                }
-            } else if (args.length == 3 && args[1].equals("add")) {
-                p = this.getServer().getPlayer(args[0]);
-                if (p == sender) {
-                    p.achievements.add(args[2]);
-                    p.sendMessage("§b成就 " + args[2] + " 已加载！");
-                } else if (p == null) {
-                    sender.sendMessage("§m§c" + date_show + "<Error>未查找到该名字对应的在线玩家！");
-                } else {
-                    p.achievements.add(args[2]);
-                    sender.sendMessage("操作成功！");
-                    p.sendMessage("§b" + sender.getName() + "为你加载了 " + args[2] + " 成就");
-                }
-            } else if (args.length == 3 && args[1].equals("remove")) {
-                p = this.getServer().getPlayer(args[0]);
-                if (p == sender) {
-                    p.achievements.remove(args[2]);
-                    p.sendMessage("§b成就 " + args[2] + " 已删除！");
-                } else if (p == null) {
-                    sender.sendMessage("§m§c" + date_show + "<Error>未查找到该名字对应的在线玩家！");
-                } else {
-                    p.achievements.remove(args[2]);
-                    sender.sendMessage("操作成功！");
-                    p.sendMessage("§b" + sender.getName() + "为你删除了 " + args[2] + " 成就");
-                }
-            } else {
-                sender.sendMessage("§d§m/achievement                   输出自己的成就列表\n/achievement [玩家名] clear          清除所有成就\n/achievement [玩家名] add [成就]     增加成就(数据)\n/achievement [玩家名] remove [成就]  删除成就(数据)\n§a----------------------");
+                Car1 anchor = new Car1(p.getLocation().getChunk(), Entity.getDefaultNBT(p.getPosition())
+                        .putString("account", "null")
+                        .putCompound("Skin", (new CompoundTag()))
+                );
+                anchor.spawnToAll();
+                p.sendMessage(String.valueOf(anchor_information.name));
+                p.sendMessage(String.valueOf(anchor_information.vector3));
             }
-        }
 
-        if (command.getName().equals("set")) {
-            sender.sendMessage("现已改为/do");
-        }
+            if (command.getName().equals("achievement")) {
+                p = (Player) sender;
+                if (args.length == 0) {
+                    p.sendMessage("§g§m你的成就列表:\n" + ((Player) sender).achievements);
+                } else if (args.length == 2 && args[1].equals("clear")) {
+                    p = this.getServer().getPlayer(args[0]);
+                    if (p == sender) {
+                        p.achievements.clear();
+                        p.sendMessage("§b成就列表已清空！");
+                    } else if (p == null) {
+                        sender.sendMessage("§m§c" + date_show + "<Error>未查找到该名字对应的在线玩家！");
+                    } else {
+                        p.achievements.clear();
+                        sender.sendMessage("§a§m Success");
+                        p.sendMessage("§b你的成就列表已被 " + sender.getName() + " 清空！");
+                    }
+                } else if (args.length == 3 && args[1].equals("add")) {
+                    p = this.getServer().getPlayer(args[0]);
+                    if (p == sender) {
+                        p.achievements.add(args[2]);
+                        p.sendMessage("§b成就 " + args[2] + " 已加载！");
+                    } else if (p == null) {
+                        sender.sendMessage("§m§c" + date_show + "<Error>未查找到该名字对应的在线玩家！");
+                    } else {
+                        p.achievements.add(args[2]);
+                        sender.sendMessage("操作成功！");
+                        p.sendMessage("§b" + sender.getName() + "为你加载了 " + args[2] + " 成就");
+                    }
+                } else if (args.length == 3 && args[1].equals("remove")) {
+                    p = this.getServer().getPlayer(args[0]);
+                    if (p == sender) {
+                        p.achievements.remove(args[2]);
+                        p.sendMessage("§b成就 " + args[2] + " 已删除！");
+                    } else if (p == null) {
+                        sender.sendMessage("§m§c" + date_show + "<Error>未查找到该名字对应的在线玩家！");
+                    } else {
+                        p.achievements.remove(args[2]);
+                        sender.sendMessage("操作成功！");
+                        p.sendMessage("§b" + sender.getName() + "为你删除了 " + args[2] + " 成就");
+                    }
+                } else {
+                    sender.sendMessage("§d§m/achievement                   输出自己的成就列表\n/achievement [玩家名] clear          清除所有成就\n/achievement [玩家名] add [成就]     增加成就(数据)\n/achievement [玩家名] remove [成就]  删除成就(数据)\n§a----------------------");
+                }
+            }
 
-        if (command.getName().equals("map")) {
-            assert p != null;
-            System.out.println("aaa");
+            if (command.getName().equals("set")) {
+                sender.sendMessage("现已改为/do");
+            }
+
+            if (command.getName().equals("w")) {
+                assert p != null;
+                Worlds_teleport.WorldTeleport(p);
+            }
+
+            if (command.getName().equals("map")) {
+                assert p != null;
+                //物品栏名字显示
+                p.sendPopup("aaa");
+            }
+        } else {
+            sender.sendMessage(TextFormat.colorize('&', "&o&c请不要用控制台执行"));
         }
 
         return true;

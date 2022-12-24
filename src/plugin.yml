@@ -4,7 +4,7 @@ version: 1. 4. 3
 api: [1.0.9]
 
 author:  penguin
-website: xxx
+website: mc.zj.cn
 
 commands:
   biomes:
@@ -67,6 +67,11 @@ commands:
     description: "小地图测试"
     usage: "/map"
 
+  w:
+    permission: "World.teleport"
+    description: "多世界传送菜单呼出"
+    usage: "/w"
+
 permissions:
   command.biomes:
     default: op
@@ -102,6 +107,9 @@ permissions:
     default: op
 
   command.Map.show:
+    default: true
+
+  command.World.teleport:
     default: true
 
 
