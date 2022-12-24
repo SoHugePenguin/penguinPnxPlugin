@@ -21,7 +21,7 @@ public class ReplaceFill extends FormWindowCustom {
         super("§6替换方块填充", elements);
     }
 
-    public static FormWindowCustom Replace_Fill(){
+    public static FormWindowCustom Replace_Fill() {
         List<Element> el = new ArrayList<>();
         el.add(new ElementLabel("输入被替换方块§l§6    输入方块ID"));
         el.add(new ElementInput(" "));
@@ -34,11 +34,11 @@ public class ReplaceFill extends FormWindowCustom {
         return new ReplaceFill(el);
     }
 
-    public static void ReplaceFill_do(int id , int special_id , int id2 , int special_id2, Player player){
+    public static void ReplaceFill_do(int id, int special_id, int id2, int special_id2, Player player) {
         String text = "";
-        if(Block.get(id,special_id).getName() !=null) {
-            if(Block.get(id,special_id).getName().contains("UNKNOWN")){
-                special_id=0;
+        if (Block.get(id, special_id).getName() != null) {
+            if (Block.get(id, special_id).getName().contains("UNKNOWN")) {
+                special_id = 0;
                 player.sendMessage("-->§c没有这种特殊值的方块，已自动改为默认值0");
             }
 //            从小到大排序
@@ -66,19 +66,19 @@ public class ReplaceFill extends FormWindowCustom {
                 }
                 if (all_ok) {
                     Long[] xyz2 = new Long[]{(long) vector3s.get(1).x, (long) vector3s.get(1).y, (long) vector3s.get(1).z};
-                    player.sendMessage("§e坐标1 " + Arrays.toString(xyz1) + "\n§a坐标2 " + Arrays.toString(xyz2) + " §6 属性: " + Block.get(id,special_id));
+                    player.sendMessage("§e坐标1 " + Arrays.toString(xyz1) + "\n§a坐标2 " + Arrays.toString(xyz2) + " §6 属性: " + Block.get(id, special_id));
                     long x_fill = xyz1[0];
                     long y_fill = xyz1[1];
                     long z_fill = xyz1[2];
 
 
                     //                    刷新undo撤销
-                    undo_map.put(player.getName(),new ArrayList<>());
+                    undo_map.put(player.getName(), new ArrayList<>());
                     ArrayList<Block> save = new ArrayList<>();
                     while (true) {
                         Vector3 vector_fill = new Vector3((double) x_fill, (double) y_fill, (double) z_fill);
-                        if(player.getLevel().getBlock(vector_fill).getId() == id &&
-                                player.getLevel().getBlock(vector_fill).getExactIntStorage()==special_id){
+                        if (player.getLevel().getBlock(vector_fill).getId() == id &&
+                                player.getLevel().getBlock(vector_fill).getExactIntStorage() == special_id) {
                             save.add(player.getLevel().getBlock(vector_fill));
                             player.level.setBlock(vector_fill, Block.get(id2, special_id2));
                             ++end_all;
@@ -102,12 +102,12 @@ public class ReplaceFill extends FormWindowCustom {
                             "\nplayer: " + player.getName() +
                             " §d§m已为你填充" + end_all + " §l§b块方块 §6";
 
-                    undo_map.put(player.getName(),save);
+                    undo_map.put(player.getName(), save);
 
                 }
             }
-        }else {
-            text = "id " +id +
+        } else {
+            text = "id " + id +
                     "\nspecial_id :" + special_id +
                     "\nplayer: " + player.getName() +
                     "\n§l§c你输入的方块ID不存在，填充失败！";

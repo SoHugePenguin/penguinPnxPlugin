@@ -5,7 +5,6 @@ import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.customitem.CustomItemDefinition;
 import cn.nukkit.item.customitem.ItemCustomTool;
 import cn.nukkit.item.customitem.data.ItemCreativeCategory;
-import cn.nukkit.item.customitem.data.Offset;
 import cn.nukkit.item.customitem.data.RenderOffsets;
 
 public class Custom_Pickaxe extends ItemCustomTool {
@@ -24,13 +23,7 @@ public class Custom_Pickaxe extends ItemCustomTool {
                 .handEquipped(true)
                 //If true is the way the tool is displayed, false is the item
                 .foil(false)
-                .renderOffsets(new RenderOffsets(
-                                Offset.builder().position(-0.2f, -0.5f , -1f).rotation(60f, 35f, 90f).scale(1f,1f,1f),
-                                Offset.builder().position(0.7f,0.2f,-1f).rotation(120f, 70f, 160f).scale(1f,1f,1f),
-                                Offset.builder().position(0f,0f,0f).rotation(60f, 35f, 90f).scale(1f,1f,1f),
-                                Offset.builder().position(0f,0f,0f).rotation(60f, 35f, 90f).scale(1f,1f,1f)
-                        )
-                )
+                .renderOffsets(RenderOffsets.scaleOffset(64))
                 //Items with enchanted light
                 .build();
     }

@@ -29,10 +29,10 @@ public class sword_2 extends ItemCustomTool {
                 .handEquipped(true)
                 .foil(false)
                 .renderOffsets(new RenderOffsets(
-                        Offset.builder().position(-0.2f, -0.5f , -1f).rotation(60f, 35f, 90f),
-                        Offset.builder().position(0.7f,2f,-1f),
-                        Offset.builder().position(0f,0f,0f),
-                        Offset.builder().position(0f,0f,0f)
+                                Offset.builder().position(-0.2f, -0.5f, -1f).rotation(60f, 35f, 90f),
+                                Offset.builder().position(0.7f, 2f, -1f),
+                                Offset.builder().position(0f, 0f, 0f),
+                                Offset.builder().position(0f, 0f, 0f)
                         )
                 )
                 .build();

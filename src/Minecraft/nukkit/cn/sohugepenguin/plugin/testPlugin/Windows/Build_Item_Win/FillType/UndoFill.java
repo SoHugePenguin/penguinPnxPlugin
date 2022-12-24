@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Main_PluginBase.undo_map;
 
 public class UndoFill {
-    public static void undo_Fill(Player player){
+    public static void undo_Fill(Player player) {
         ArrayList<Block> blocks = undo_map.get(player.getName());
 
-        if(blocks.size()==0){
-            player.sendToast("Warning",    "目前只能撤回上一次的操作！");
+        if (blocks.size() == 0) {
+            player.sendToast("Warning", "目前只能撤回上一次的操作！");
             return;
         }
 
@@ -20,6 +20,6 @@ public class UndoFill {
             player.getLevel().setBlock(block, block);
         }
 
-        undo_map.put(player.getName(),new ArrayList<>());
+        undo_map.put(player.getName(), new ArrayList<>());
     }
 }

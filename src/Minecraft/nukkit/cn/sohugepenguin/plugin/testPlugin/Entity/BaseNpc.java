@@ -29,19 +29,19 @@ public class BaseNpc extends EntityHuman implements CustomEntity {
             .summonable(true)
             .spawnEgg(false)
             .build();
-    @Override
-    public CustomEntityDefinition getDefinition() {
-        return def;
-    }
+    public static ArrayList<BaseNpc> onlineNpcList = new ArrayList<>();
+    public boolean alive = true;
+    public Config config;
+    public Skin skin;
 
     public BaseNpc(FullChunk chunk, CompoundTag tag) {
         super(chunk, tag);
     }
 
-    public boolean alive = true;
-    public static ArrayList<BaseNpc> onlineNpcList = new ArrayList<>();
-    public Config config;
-    public Skin skin;
+    @Override
+    public CustomEntityDefinition getDefinition() {
+        return def;
+    }
 
     @Override
     public String getOriginalName() {
@@ -54,14 +54,14 @@ public class BaseNpc extends EntityHuman implements CustomEntity {
         Config config;
         File[] file = new File("penguin_plugin/Npc_config").listFiles();
         assert file != null;
-        for(File Folder : file){
-            config = new Config(Folder,2);
-            if(!Folder.getName().contains("npcBase") && this.namedTag.get("account").toString().contains(config.getString("uuid"))){
+        for (File Folder : file) {
+            config = new Config(Folder, 2);
+            if (!Folder.getName().contains("npcBase") && this.namedTag.get("account").toString().contains(config.getString("uuid"))) {
                 this.config = config;
             }
         }
-        if(this.config == null){
-            this.config = new Config("penguin_plugin/Npc_config/npcBase.yml",2);
+        if (this.config == null) {
+            this.config = new Config("penguin_plugin/Npc_config/npcBase.yml", 2);
         }
         this.setSkin(skin);
         super.initEntity();
@@ -71,20 +71,20 @@ public class BaseNpc extends EntityHuman implements CustomEntity {
 
     @Override
     public Skin getSkin() {
-        if(skin == null) {
+        if (skin == null) {
             skin = new Skin();
             BufferedImage image;
             //获取服务器npc数据文件
             Config config;
             File[] file = new File("penguin_plugin/Npc_config").listFiles();
             assert file != null;
-            for(File Folder : file){
-                config = new Config(Folder,2);
-                if(!Folder.getName().contains("npcBase") && this.namedTag.get("account").toString().contains(config.getString("uuid"))){
+            for (File Folder : file) {
+                config = new Config(Folder, 2);
+                if (!Folder.getName().contains("npcBase") && this.namedTag.get("account").toString().contains(config.getString("uuid"))) {
                     this.config = config;
                 }
             }
-            File f = new File("penguin_plugin/skins/" + (this.config.get("skin") != null ?  this.config.get("skin") : "steve.png"));
+            File f = new File("penguin_plugin/skins/" + (this.config.get("skin") != null ? this.config.get("skin") : "steve.png"));
             try {
                 image = ImageIO.read(f);
             } catch (IOException e) {
@@ -112,68 +112,68 @@ public class BaseNpc extends EntityHuman implements CustomEntity {
     }
 
     @Override
-    public void setScale(float scale) {
-        super.setScale(this.config.get("model_size") != null ? (float) this.config.getDouble("model_size") : 1f );
-    }
-
-    @Override
     public float getScale() {
         return super.getScale();
     }
 
     @Override
+    public void setScale(float scale) {
+        super.setScale(this.config.get("model_size") != null ? (float) this.config.getDouble("model_size") : 1f);
+    }
+
+    @Override
     public boolean isAlive() {
-            if (this.getHealth()<10){
-                this.health = 40;
-            }
-            boolean add = true;
+        if (this.getHealth() < 10) {
+            this.health = 40;
+        }
+        boolean add = true;
         for (BaseNpc baseNpc : onlineNpcList) {
             if (baseNpc == this) {
                 add = false;
                 break;
             }
         }
-        if(add){
+        if (add) {
             onlineNpcList.add(this);
         }
-                    Player p;
-                    int idr = 0;
-                    this.addEffect((new Effect(11, "test", 0, 0, 0, false)).setDuration(20).setAmplifier(5).setAmbient(true));
-                    if(online_players.size()>0) {
-                        ArrayList<Double> length = new ArrayList<>();
-                        for (Player online_player : online_players) {
-                            p = online_player;
-                            double dx = (p.x - this.x);
-                            double dy = (p.y - this.y);
-                            double dz = (p.z - this.z);
-                            double l = dx * dx + dy * dy + dz * dz;
-                            if (l < 200) {
-                                length.add(l);
-                            } else length.add(300D);
+        Player p;
+        int idr = 0;
+        this.addEffect((new Effect(11, "test", 0, 0, 0, false)).setDuration(20).setAmplifier(5).setAmbient(true));
+        if (online_players.size() > 0) {
+            ArrayList<Double> length = new ArrayList<>();
+            for (Player online_player : online_players) {
+                p = online_player;
+                double dx = (p.x - this.x);
+                double dy = (p.y - this.y);
+                double dz = (p.z - this.z);
+                double l = dx * dx + dy * dy + dz * dz;
+                if (l < 200) {
+                    length.add(l);
+                } else length.add(300D);
+            }
+            for (int j = 0; j < length.size(); j++) {
+                if (length.get(j) < length.get(idr)) {
+                    idr = j;
+                }
+            }
+            if (length.get(idr) < 200) {
+                for (int k = 0; k < idr + 1; k++) {
+                    if (k == idr) {
+                        p = online_players.get(k);
+                        double dx = this.x - p.x;
+                        double dy = this.y - p.y;
+                        double dz = this.z - p.z;
+                        double yaw = Math.asin(dx / Math.sqrt(dx * dx + dz * dz)) / Math.PI * 180.0D;
+                        double pitch = Math.round(Math.asin(dy / Math.sqrt(dx * dx + dz * dz + dy * dy)) / Math.PI * 180.0D);
+                        if (dz > 0.0D) {
+                            yaw = -yaw + 180.0D;
                         }
-                        for (int j = 0; j < length.size(); j++) {
-                            if (length.get(j) < length.get(idr)) {
-                                idr = j;
-                            }
-                        }
-                        if (length.get(idr) < 200) {
-                            for (int k = 0; k < idr + 1; k++) {
-                                if (k == idr) {
-                                    p = online_players.get(k);
-                                    double dx = this.x - p.x;
-                                    double dy = this.y - p.y;
-                                    double dz = this.z - p.z;
-                                    double yaw = Math.asin(dx / Math.sqrt(dx * dx + dz * dz)) / Math.PI * 180.0D;
-                                    double pitch = Math.round(Math.asin(dy / Math.sqrt(dx * dx + dz * dz + dy * dy)) / Math.PI * 180.0D);
-                                    if (dz > 0.0D) {
-                                        yaw = -yaw + 180.0D;
-                                    }
-                                    this.yaw = yaw;
-                                    this.pitch = pitch;
-                                }
-                            }
-                        }
+                        this.yaw = yaw;
+                        this.pitch = pitch;
                     }
+                }
+            }
+        }
         return alive;
     }
 
@@ -187,16 +187,16 @@ public class BaseNpc extends EntityHuman implements CustomEntity {
 //        this.getServer().updatePlayerListData(this.getUniqueId(),this.getId(),this.getName(),this.getSkin());
         //updatePlayerListData是增加到ScoreboardList玩家列表中，皮肤刷新时需要用到，可以remove取消列表显示！
         this.spawnToAll();
-            this.level.addSound(this, Sound.LAND_BONE_BLOCK);
-            p.showFormWindow(HuTao_Windows(p,this));
-            return true;
+        this.level.addSound(this, Sound.LAND_BONE_BLOCK);
+        p.showFormWindow(HuTao_Windows(p, this));
+        return true;
     }
 
     @Override
     public Item[] getDrops() {
         //取消掉落物防止kill @e
         List<Item> drops = new ArrayList<>();
-            drops.add(Item.get(Item.AIR, 0, 0));
+        drops.add(Item.get(Item.AIR, 0, 0));
         return drops.toArray(new Item[0]);
     }
 
@@ -246,13 +246,13 @@ public class BaseNpc extends EntityHuman implements CustomEntity {
     }
 
     @Override
-    public void setNameTag(String name) {
-        super.setNameTag(this.config.get("name") != null ?  this.config.getString("name") : "npc");
+    public String getNameTag() {
+        return this.config.get("name") != null ? this.config.getString("name") : "npc";
     }
 
     @Override
-    public String getNameTag() {
-        return this.config.get("name") != null ?  this.config.getString("name") : "npc";
+    public void setNameTag(String name) {
+        super.setNameTag(this.config.get("name") != null ? this.config.getString("name") : "npc");
     }
 
     @Override

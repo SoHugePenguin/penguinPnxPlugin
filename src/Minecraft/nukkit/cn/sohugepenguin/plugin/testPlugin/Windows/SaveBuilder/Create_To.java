@@ -9,16 +9,17 @@ import java.io.File;
 
 public class Create_To extends FormWindowSimple {
     public Create_To() {
-        super("保存文件·菜单","");
+        super("保存文件·菜单", "");
     }
-    public static FormWindowSimple Create_Yml_To(String text){
+
+    public static FormWindowSimple Create_Yml_To(String text) {
         FormWindowSimple home = new Create_To();
-        if(text.equals("")){
-            home = new FormWindowSimple("错误！","§l§c建筑储存不能没有名字！！！");
+        if (text.equals("")) {
+            home = new FormWindowSimple("错误！", "§l§c建筑储存不能没有名字！！！");
             home.addButton(new ElementButton("确定！"));
-        }else {
+        } else {
             home.setContent("§a" + text + "\n§l§6  文件保存至>>>\n");
-            File[] listFiles = new File("penguin_plugin","Builder_Save").listFiles();
+            File[] listFiles = new File("penguin_plugin", "Builder_Save").listFiles();
             assert listFiles != null;
             for (File wFolder : listFiles) {
                 home.addButton(new ElementButton(wFolder.getName(), new ElementButtonImageData("path", "textures/ui/book3")));

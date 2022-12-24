@@ -25,6 +25,10 @@ public class Car1 extends Entity implements CustomEntity, EntityRideable {
     public double mx;
     public double my;
 
+    public Car1(FullChunk chunk, CompoundTag tag) {
+        super(chunk, tag);
+    }
+
     @Override
     public CustomEntityDefinition getDefinition() {
         return def;
@@ -41,12 +45,8 @@ public class Car1 extends Entity implements CustomEntity, EntityRideable {
         return NETWORK_ID;
     }
 
-    public Car1(FullChunk chunk, CompoundTag tag) {
-        super(chunk, tag);
-    }
-
     @Override
-    public void initEntity(){
+    public void initEntity() {
         super.initEntity();
         this.setMaxHealth(40);
         this.spawnToAll();
@@ -54,7 +54,7 @@ public class Car1 extends Entity implements CustomEntity, EntityRideable {
 
     @Override
     public boolean isAlive() {
-        if(this.scale != 0.5){
+        if (this.scale != 0.5) {
             this.setScale(0.5f);
         }
         if (online_players.size() > 0) {
@@ -85,11 +85,11 @@ public class Car1 extends Entity implements CustomEntity, EntityRideable {
                 }
             }
         }
-        if(this.passengers.size() == 0){
-            if(this.getLevel().getBlock((int) this.x, (int) (this.y-0.15), (int) this.z).getId() == 0){
-                this.fastMove(0 , -0.15 , 0);
-            } else if (this.getLevel().getBlock((int) this.x, (int) (this.y-0.04), (int) this.z).getId() == 0) {
-                this.fastMove(0 , -0.04 , 0);
+        if (this.passengers.size() == 0) {
+            if (this.getLevel().getBlock((int) this.x, (int) (this.y - 0.15), (int) this.z).getId() == 0) {
+                this.fastMove(0, -0.15, 0);
+            } else if (this.getLevel().getBlock((int) this.x, (int) (this.y - 0.04), (int) this.z).getId() == 0) {
+                this.fastMove(0, -0.04, 0);
             }
         }
         return super.isAlive();
@@ -113,11 +113,11 @@ public class Car1 extends Entity implements CustomEntity, EntityRideable {
                 }
             }
         }
-        if(!has_ride){
+        if (!has_ride) {
             this.level.addSound(this, Sound.LAND_BONE_BLOCK);
             p.riding = this;
             byte b = 1;
-            this.mountEntity(p,b);
+            this.mountEntity(p, b);
             this.isControlling(p);
             p.sendTip("乘坐成功");
         }
@@ -133,7 +133,8 @@ public class Car1 extends Entity implements CustomEntity, EntityRideable {
         }
         return super.mountEntity(entity, mode);
     }
-@Override
+
+    @Override
     public boolean mountEntity(Entity entity, byte mode) {
         boolean r = super.mountEntity(entity, mode);
         if (entity.riding == this) {

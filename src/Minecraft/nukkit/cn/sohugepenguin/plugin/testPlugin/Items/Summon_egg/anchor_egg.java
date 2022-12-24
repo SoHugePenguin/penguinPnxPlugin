@@ -44,15 +44,15 @@ public class anchor_egg extends ItemCustomTool {
     @Override
     public boolean onClickAir(Player player, Vector3 directionVector) {
         if (!player.containTag("noUseStab")) {
-            if(!anchor_information.name.contains(player.getInventory().getItemInHand().getName())){
-                Anchor anchor =  new Anchor(player.getLocation().getChunk(), Entity.getDefaultNBT(player.getPosition())
-                        .putString("account","null")
+            if (!anchor_information.name.contains(player.getInventory().getItemInHand().getName())) {
+                Anchor anchor = new Anchor(player.getLocation().getChunk(), Entity.getDefaultNBT(player.getPosition())
+                        .putString("account", "null")
                         .putCompound("Skin", (new CompoundTag()))
                 );
                 anchor.setNameTag(player.getInventory().getItemInHand().getName());
                 anchor.spawnTo(player);
                 player.sendMessage("You Create a Anchor name " + player.getInventory().getItemInHand().getName());
-            }else{
+            } else {
                 player.sendMessage("已经有该名的传送锚点了，请用铁砧改名手中的物品");
             }
 
@@ -61,13 +61,13 @@ public class anchor_egg extends ItemCustomTool {
             player.addTag("noUseStab");
             AtomicInteger i = new AtomicInteger();
             handler = Server.getInstance().getScheduler().scheduleRepeatingTask(Server.getInstance().getPluginManager().getPlugin("Penguin_Plugin_1"), () -> {
-                if(i.get() >=1){
+                if (i.get() >= 1) {
                     player.removeTag("noUseStab");
                     handler.cancel();
                 }
                 i.getAndIncrement();
             }, 60);
-        }else {
+        } else {
             player.sendTip("冷却中！");
         }
         return super.onClickAir(player, directionVector);

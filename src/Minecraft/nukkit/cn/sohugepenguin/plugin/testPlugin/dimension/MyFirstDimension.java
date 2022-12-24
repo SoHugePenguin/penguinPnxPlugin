@@ -18,6 +18,11 @@ public class MyFirstDimension extends Biome implements com.dfsek.terra.api.world
     }
 
     @Override
+    public void setBaseHeight(float baseHeight) {
+        super.setBaseHeight(0);
+    }
+
+    @Override
     public void setId(int id) {
         super.setId(id);
     }
@@ -49,10 +54,5 @@ public class MyFirstDimension extends Biome implements com.dfsek.terra.api.world
     @Override
     public String getID() {
         return null;
-    }
-
-    @Override
-    public void setBaseHeight(float baseHeight) {
-        super.setBaseHeight(0);
     }
 }

@@ -19,23 +19,24 @@ public class Npc_Setting_Skin extends FormWindowSimple {
     public Npc_Setting_Skin() {
         super("§cNpc皮肤管理", "§o§d你正在更换该NPC的皮肤\n§6请选择你要更换的皮肤！");
     }
-    public static FormWindowSimple getNpc_Setting_Skin(){
+
+    public static FormWindowSimple getNpc_Setting_Skin() {
         FormWindowSimple home = new Npc_Setting_Skin();
-        File[] listFiles = new File("penguin_plugin","skins").listFiles();
+        File[] listFiles = new File("penguin_plugin", "skins").listFiles();
         assert listFiles != null;
         for (File Fold : listFiles) {
             home.addButton(new ElementButton(Fold.getName(),
-                    new ElementButtonImageData("path" , "textures/npc_skins/" + Fold.getName())));
+                    new ElementButtonImageData("path", "textures/npc_skins/" + Fold.getName())));
         }
         return home;
     }
 
-    public static void ChangeSkinSuccess(Player p , String text) throws IOException {
-        for (int i = 0; i < Npc_HuTao.PlayerList.size() ; i++) {
-            if(p.getName().equals(Npc_HuTao.PlayerList.get(i))){
+    public static void ChangeSkinSuccess(Player p, String text) throws IOException {
+        for (int i = 0; i < Npc_HuTao.PlayerList.size(); i++) {
+            if (p.getName().equals(Npc_HuTao.PlayerList.get(i))) {
                 BaseNpc human = Npc_HuTao.PlayerTargetEntityList.get(i);
                 Skin skin = new Skin();
-                File file = new File("penguin_plugin","skins");
+                File file = new File("penguin_plugin", "skins");
                 File skin_file = new File(file, text);
                 BufferedImage image = ImageIO.read(skin_file);   //skinData的数据类型为RGBA  A为alpha
                 skin.setSkinData(image);
@@ -51,13 +52,13 @@ public class Npc_Setting_Skin extends FormWindowSimple {
                 Config config;
                 File[] fileList = new File("penguin_plugin/Npc_config").listFiles();
                 assert fileList != null;
-                for(File Folder : fileList){
-                    config = new Config(Folder,2);
-                    if(!Folder.getName().contains("npcBase") && human.namedTag.get("account").toString().contains(config.getString("uuid"))){
-                        config.set("skin",text);
+                for (File Folder : fileList) {
+                    config = new Config(Folder, 2);
+                    if (!Folder.getName().contains("npcBase") && human.namedTag.get("account").toString().contains(config.getString("uuid"))) {
+                        config.set("skin", text);
                         config.save();
-                       human.config = config;
-                        p.sendToast("§6设置成功！","§b你成功更新了该npc的皮肤！");
+                        human.config = config;
+                        p.sendToast("§6设置成功！", "§b你成功更新了该npc的皮肤！");
                     }
                 }
 

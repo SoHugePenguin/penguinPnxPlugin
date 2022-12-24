@@ -9,7 +9,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.List;
 
-public class helmets_1 extends ItemCustomArmor{
+public class helmets_1 extends ItemCustomArmor {
     public helmets_1() {
         super("np:helmet_1", "§d紫水晶头盔", "amethyst_helmet");
     }

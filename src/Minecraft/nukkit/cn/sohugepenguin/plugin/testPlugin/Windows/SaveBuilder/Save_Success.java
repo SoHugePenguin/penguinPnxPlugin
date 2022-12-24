@@ -15,8 +15,9 @@ import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.SaveBu
 
 public class Save_Success extends FormWindowSimple {
     public Save_Success() {
-        super("保存文件·菜单","");
+        super("保存文件·菜单", "");
     }
+
     public static FormWindowSimple SaveSuccess(Player p, String File, String Text) throws IOException {
         FormWindowSimple simple = new Save_Success();
 
@@ -24,12 +25,12 @@ public class Save_Success extends FormWindowSimple {
 
         if (v != null && v.size() == 2) {
             simple.setContent("§6 " + Text + " §a已成功保存至§6 " + File);
-            File file = new File("penguin_plugin","Builder_Save\\" + File);
+            File file = new File("penguin_plugin", "Builder_Save\\" + File);
             File yml = new File(file, Text + ".yml");
             if (!yml.exists()) {
                 yml.createNewFile();
-                clone_block(yml , p);
-            }else {
+                clone_block(yml, p);
+            } else {
                 simple.setContent("§c[Error] " + Text + " 文件已经存在在 §6" + File + " §c中,请勿重名！");
             }
         } else {

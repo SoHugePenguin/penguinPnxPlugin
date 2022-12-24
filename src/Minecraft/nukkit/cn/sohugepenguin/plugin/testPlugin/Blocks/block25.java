@@ -10,12 +10,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class block25 extends Block implements CustomBlock {
+    @NotNull
     @Override
     public String getNamespaceId() {
         return "np:color_block25";
     }
 
-   @Override
+    @Override
     public CustomBlockDefinition getDefinition() {
         return CustomBlockDefinition
                 .builder(this, "color_block25")//texture name
@@ -38,12 +39,12 @@ public class block25 extends Block implements CustomBlock {
         return 3;
     }
 
-//摩擦系数
+    //摩擦系数
     @Override
     public double getFrictionFactor() {
         return 0.4;
     }
-    
+
     //阻力
     @Override
     public double getResistance() {

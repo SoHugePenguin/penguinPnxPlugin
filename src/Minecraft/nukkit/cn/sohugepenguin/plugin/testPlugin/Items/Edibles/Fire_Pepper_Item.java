@@ -13,18 +13,18 @@ import cn.nukkit.level.Sound;
 import static cn.nukkit.network.protocol.CameraShakePacket.CameraShakeAction.ADD;
 import static cn.nukkit.network.protocol.CameraShakePacket.CameraShakeType.ROTATIONAL;
 
-public class Fire_Pepper_Item extends ItemCustomEdible  {
-        private FoodNormal food;
+public class Fire_Pepper_Item extends ItemCustomEdible {
+    private FoodNormal food;
 
-        public Fire_Pepper_Item() {
-            super("np:lajiao", "绝云椒椒", "lajiao");
-        }
+    public Fire_Pepper_Item() {
+        super("np:lajiao", "绝云椒椒", "lajiao");
+    }
 
 
     @Override
     public CustomItemDefinition getDefinition() {
         return CustomItemDefinition
-                .edibleBuilder(this,ItemCreativeCategory.ITEMS)
+                .edibleBuilder(this, ItemCreativeCategory.ITEMS)
                 .allowOffHand(true)
                 .handEquipped(false)
                 .foil(true)
@@ -32,13 +32,8 @@ public class Fire_Pepper_Item extends ItemCustomEdible  {
     }
 
     @Override
-        public int getTier() {
-            return Item.CARROT;
-        }
-
-    @Override
-    public Item setLore(String... lines) {
-            return this;
+    public int getTier() {
+        return Item.CARROT;
     }
 
     @Override
@@ -62,16 +57,16 @@ public class Fire_Pepper_Item extends ItemCustomEdible  {
                 return false;
             } else {
                 Food food = Food.getByRelative(this);
-                    player.completeUsingItem(this.getNetworkId(), 1);
-                    player.getLevel().addSound(player, Sound.RANDOM_BURP);
-                    if (!player.isCreative() && !player.isSpectator()) {
-                        --this.count;
-                        player.getInventory().setItemInHand(this);
-                        //修改背包物品，此行代码不可缺少！
-                        player.fireTicks=160;
-                        player.shakeCamera(0.5F,3F,ROTATIONAL,ADD);
-                        player.getFoodData().addFoodLevel(2,1.5F);
-                    }
+                player.completeUsingItem(this.getNetworkId(), 1);
+                player.getLevel().addSound(player, Sound.RANDOM_BURP);
+                if (!player.isCreative() && !player.isSpectator()) {
+                    --this.count;
+                    player.getInventory().setItemInHand(this);
+                    //修改背包物品，此行代码不可缺少！
+                    player.fireTicks = 160;
+                    player.shakeCamera(0.5F, 3F, ROTATIONAL, ADD);
+                    player.getFoodData().addFoodLevel(2, 1.5F);
+                }
                 return true;
             }
         }

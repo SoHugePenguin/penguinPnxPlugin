@@ -5,7 +5,7 @@ import cn.nukkit.math.Vector3;
 import java.util.ArrayList;
 
 public class Coordinate_sorting {
-    public static ArrayList<Vector3> sorting(ArrayList<Vector3> v){
+    public static ArrayList<Vector3> sorting(ArrayList<Vector3> v) {
         double data;
         if (v.get(1).x < v.get(0).x) {
             data = v.get(1).x;
@@ -21,7 +21,7 @@ public class Coordinate_sorting {
             data = v.get(1).z;
             v.get(1).z = v.get(0).z;
             v.get(0).z = data;
-    }
+        }
         return v;
     }
 }

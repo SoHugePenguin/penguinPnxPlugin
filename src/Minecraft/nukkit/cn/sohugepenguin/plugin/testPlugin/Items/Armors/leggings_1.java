@@ -9,7 +9,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.List;
 
-public class leggings_1 extends ItemCustomArmor{
+public class leggings_1 extends ItemCustomArmor {
     public leggings_1() {
         super("np:leggings_1", "§d紫水晶裤衩", "amethyst_leggings");
     }

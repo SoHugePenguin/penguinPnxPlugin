@@ -45,11 +45,6 @@ public class BuildGod_Item extends ItemCustomTool implements Listener {
         return 4;
     }
 
-    @Override
-    public Item setLore(String... lines) {
-        return this;
-    }
-
 //    @Override
 //    public boolean allowOffHand() {
 //        return false;

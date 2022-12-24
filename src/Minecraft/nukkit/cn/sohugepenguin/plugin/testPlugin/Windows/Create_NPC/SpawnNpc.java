@@ -16,10 +16,10 @@ public class SpawnNpc {
 
     public static void Spawn_Npc(Player p) {
         human = new BaseNpc(p.getLocation().getChunk(), Entity.getDefaultNBT(p.getPosition())
-                .putString("account","null")
+                .putString("account", "null")
                 .putCompound("Skin", (new CompoundTag()))
-                );
-        human.namedTag.putString("account",human.getUniqueId().toString());
+        );
+        human.namedTag.putString("account", human.getUniqueId().toString());
         File[] fileList = new File("penguin_plugin/Npc_config").listFiles();
         assert fileList != null;
         boolean is_ok = true;
@@ -34,15 +34,15 @@ public class SpawnNpc {
         if (is_ok) {
             Config npc_config = new Config("penguin_plugin/Npc_config/npcBase.yml", 2);
             Config npc = new Config("penguin_plugin/Npc_config/npc" + npc_config.getInt("npcNumber") + ".yml", 2);
-            npc.set("uuid",human.getUniqueId().toString());
-            npc.set("world",human.getLevel().getName());
+            npc.set("uuid", human.getUniqueId().toString());
+            npc.set("world", human.getLevel().getName());
             npc.set("x", human.x);
             npc.set("y", human.y);
             npc.set("z", human.z);
             npc.set("name", "npc" + npc_config.getInt("npcNumber"));
             npc.set("skin", "steve.png");
-            npc.set("model_size",1);
-            npc.set("eye_height",1.8f);
+            npc.set("model_size", 1);
+            npc.set("eye_height", 1.8f);
             npc_config.set("npcNumber", npc_config.getInt("npcNumber") + 1);
             npc.save();
             npc_config.save();

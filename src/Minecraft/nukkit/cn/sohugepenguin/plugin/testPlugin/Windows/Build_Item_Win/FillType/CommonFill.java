@@ -21,7 +21,7 @@ public class CommonFill extends FormWindowCustom {
         super("§6普通填充", elements);
     }
 
-    public static FormWindowCustom common_fill(){
+    public static FormWindowCustom common_fill() {
         List<Element> el = new ArrayList<>();
         el.add(new ElementLabel("§l§6请输入方块ID"));
         el.add(new ElementInput(" "));
@@ -30,11 +30,11 @@ public class CommonFill extends FormWindowCustom {
         return new CommonFill(el);
     }
 
-    public static void common_fill_do(int id , int special_id , Player player){
+    public static void common_fill_do(int id, int special_id, Player player) {
         String text = "";
-        if(Block.get(id,special_id).getName() !=null) {
-            if(Block.get(id,special_id).getName().contains("UNKNOWN")){
-                special_id=0;
+        if (Block.get(id, special_id).getName() != null) {
+            if (Block.get(id, special_id).getName().contains("UNKNOWN")) {
+                special_id = 0;
                 player.sendMessage("-->§c没有这种特殊值的方块，已自动改为默认值0");
             }
 //            从小到大排序
@@ -52,23 +52,23 @@ public class CommonFill extends FormWindowCustom {
                 boolean all_ok = false;
                 if (lengthen.get(0) <= 1000L && lengthen.get(1) <= 1000L && lengthen.get(2) <= 1000L) {
                     temp = lengthen.get(0) * lengthen.get(1) * lengthen.get(2);
-                    if (temp <= 1000000L) {
+                    if (temp <= 5000000L) {
                         all_ok = true;
                     } else {
-                        player.sendMessage("§m§c<Error>填充方块过大(" + temp + "> 百万块)");
+                        player.sendMessage("§m§c<Error>填充方块过大(" + temp + "> 500万块)");
                     }
                 } else {
                     player.sendMessage("§m§c<Error>xyz的延申长度不得>1000");
                 }
                 if (all_ok) {
                     Long[] xyz2 = new Long[]{(long) vector3s.get(1).x, (long) vector3s.get(1).y, (long) vector3s.get(1).z};
-                    player.sendMessage("§e坐标1 " + Arrays.toString(xyz1) + "\n§a坐标2 " + Arrays.toString(xyz2) + " §6 属性: " + Block.get(id,special_id));
+                    player.sendMessage("§e坐标1 " + Arrays.toString(xyz1) + "\n§a坐标2 " + Arrays.toString(xyz2) + " §6 属性: " + Block.get(id, special_id));
                     long x_fill = xyz1[0];
                     long y_fill = xyz1[1];
                     long z_fill = xyz1[2];
 
 //                    刷新undo撤销
-                    undo_map.put(player.getName(),new ArrayList<>());
+                    undo_map.put(player.getName(), new ArrayList<>());
                     ArrayList<Block> save = new ArrayList<>();
                     while (true) {
                         Vector3 vector_fill = new Vector3((double) x_fill, (double) y_fill, (double) z_fill);
@@ -94,12 +94,12 @@ public class CommonFill extends FormWindowCustom {
                             "\nplayer: " + player.getName() +
                             " §d§m已为你填充" + end_all + " §l§b块方块 §6";
 
-                    undo_map.put(player.getName(),save);
+                    undo_map.put(player.getName(), save);
 
                 }
             }
-        }else {
-            text = "id " +id +
+        } else {
+            text = "id " + id +
                     "\nspecial_id :" + special_id +
                     "\nplayer: " + player.getName() +
                     "\n§l§c你输入的方块ID不存在，填充失败！";

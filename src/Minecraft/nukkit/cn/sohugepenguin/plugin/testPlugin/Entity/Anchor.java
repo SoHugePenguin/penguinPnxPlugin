@@ -19,12 +19,12 @@ public class Anchor extends Entity implements CustomEntity {
             .summonable(true)
             .spawnEgg(true)
             .build();
+    boolean a;
+    double dx, dy, dz;
 
     public Anchor(FullChunk chunk, CompoundTag tag) {
         super(chunk, tag);
     }
-    boolean a;
-    double dx,dy,dz;
 
     @NotNull
     @Override
@@ -43,7 +43,7 @@ public class Anchor extends Entity implements CustomEntity {
     }
 
     @Override
-    public void initEntity(){
+    public void initEntity() {
         super.initEntity();
         this.setMaxHealth(40);
         this.spawnToAll();
@@ -54,10 +54,10 @@ public class Anchor extends Entity implements CustomEntity {
 
     @Override
     public boolean isAlive() {
-        if(anchor_information.name == null || !anchor_information.name.contains(this.getNameTag())){
-            anchor_info(this.getNameTag() ,  this.getLocation());
+        if (anchor_information.name == null || !anchor_information.name.contains(this.getNameTag())) {
+            anchor_info(this.getNameTag(), this.getLocation());
         }
-        if(Utils.rand(1,50) == 1) {
+        if (Utils.rand(1, 50) == 1) {
             if (this.a) {
                 this.y += 0.1;
                 this.a = false;
@@ -66,11 +66,11 @@ public class Anchor extends Entity implements CustomEntity {
                 this.a = true;
             }
         }
-        if(Utils.rand(1,80) >40){
+        if (Utils.rand(1, 80) > 40) {
             this.yaw += 0.1;
-        }else this.yaw-= 0.1;
+        } else this.yaw -= 0.1;
 
-        if(Math.abs(this.dx - this.x) > 0.2 || Math.abs(this.dy - this.y) > 0.2 || Math.abs(this.dz - this.z) > 0.2){
+        if (Math.abs(this.dx - this.x) > 0.2 || Math.abs(this.dy - this.y) > 0.2 || Math.abs(this.dz - this.z) > 0.2) {
             System.out.println("qwq?");
             this.x = this.dx;
             this.y = this.dy;

@@ -1,6 +1,6 @@
 name: Penguin_Plugin_1
 main: Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Main_PluginBase
-version: 0. 0. 3
+version: 1. 4. 3
 api: [1.0.9]
 
 author:  penguin
@@ -62,6 +62,11 @@ commands:
     description: "画球指令，输入/ball查看用法"
     usage: "画球指令用法：/ball 半径(整数，必选) 方块ID(必选) 方块特殊值（可选）keep(保持，可选，使用时，方块特殊值必须要写)"
 
+  map:
+    permission: "Map.show"
+    description: "小地图测试"
+    usage: "/map"
+
 permissions:
   command.biomes:
     default: op
@@ -95,6 +100,9 @@ permissions:
 
   command.Model.Zoom:
     default: op
+
+  command.Map.show:
+    default: true
 
 
 

@@ -18,8 +18,9 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class sword_1 extends ItemCustomTool{
+public class sword_1 extends ItemCustomTool {
     TaskHandler handler;
+
     public sword_1() {
         super("np:sword_1", "§d武士刀·参之形", "sword_1");
     }
@@ -38,20 +39,20 @@ public class sword_1 extends ItemCustomTool{
                 .handEquipped(true)
                 .foil(false)
                 .renderOffsets(new RenderOffsets(
-                                Offset.builder().position(-0.2f, -0.5f , -1f).rotation(60f, 35f, 90f),
-                                Offset.builder().position(0.7f,2f,-1f),
-                                Offset.builder().position(0f,0f,0f),
-                                Offset.builder().position(0f,0f,0f)
+                                Offset.builder().position(-0.2f, -0.5f, -1f).rotation(60f, 35f, 90f),
+                                Offset.builder().position(0.7f, 2f, -1f),
+                                Offset.builder().position(0f, 0f, 0f),
+                                Offset.builder().position(0f, 0f, 0f)
                         )
                 )
                 .customBuild(nbt -> {
-            nbt.getCompound("components")
-                    .putCompound("minecraft:cooldown", new CompoundTag()
-                            .putString("category", "sword_1")
-                            .putFloat("duration", 3f))
-                    .getCompound("item_properties").putBoolean("animates_in_toolbar", true)
-                    .getCompound("item_properties").putInt("use_duration", 640);
-    });
+                    nbt.getCompound("components")
+                            .putCompound("minecraft:cooldown", new CompoundTag()
+                                    .putString("category", "sword_1")
+                                    .putFloat("duration", 3f))
+                            .getCompound("item_properties").putBoolean("animates_in_toolbar", true)
+                            .getCompound("item_properties").putInt("use_duration", 640);
+                });
     }
 
     @Override
@@ -66,13 +67,13 @@ public class sword_1 extends ItemCustomTool{
             player.addTag("noUseStab");
             AtomicInteger i = new AtomicInteger();
             handler = Server.getInstance().getScheduler().scheduleRepeatingTask(Server.getInstance().getPluginManager().getPlugin("Penguin_Plugin_1"), () -> {
-                if(i.get() >=1){
+                if (i.get() >= 1) {
                     player.removeTag("noUseStab");
                     handler.cancel();
                 }
                 i.getAndIncrement();
             }, 60);
-        }else {
+        } else {
             player.sendTip("冷却中！");
         }
         return super.onClickAir(player, directionVector);

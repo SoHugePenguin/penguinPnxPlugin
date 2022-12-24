@@ -5,8 +5,8 @@ import cn.nukkit.Player;
 import java.util.ArrayList;
 
 public class Player_Access {
-    private Player player;
     private final ArrayList<Long> player_id_list = new ArrayList();
+    private Player player;
 
     public Player_Access() {
     }

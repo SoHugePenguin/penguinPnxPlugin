@@ -11,6 +11,15 @@ import cn.nukkit.item.customitem.data.RenderOffsets;
 
 
 public class TheWorld_Menu_Item extends ItemCustomTool implements Listener {
+    static {
+        Server.getInstance().getScheduler().scheduleRepeatingTask(Server.getInstance().getPluginManager().getPlugin("Penguin_Plugin_1"), () -> Server.getInstance().getOnlinePlayers().values().forEach(player -> {
+            if (player.getInventory().getItemInHand() instanceof TheWorld_Menu_Item) {
+                if (player.getFoodData().getLevel() == player.getFoodData().getMaxLevel())
+                    player.getFoodData().setLevel(player.getFoodData().getMaxLevel() - 1);
+            }
+        }), 20);
+    }
+
     public TheWorld_Menu_Item() {
         super("np:world_menu", "世界菜单", "world_menu");
     }
@@ -29,15 +38,6 @@ public class TheWorld_Menu_Item extends ItemCustomTool implements Listener {
                 .renderOffsets(RenderOffsets.scaleOffset(32))
 //                textureSize必须是16的倍数
                 .build();
-    }
-
-    static {
-        Server.getInstance().getScheduler().scheduleRepeatingTask(Server.getInstance().getPluginManager().getPlugin("Penguin_Plugin_1"), () -> Server.getInstance().getOnlinePlayers().values().forEach(player -> {
-            if (player.getInventory().getItemInHand() instanceof TheWorld_Menu_Item) {
-                if (player.getFoodData().getLevel() == player.getFoodData().getMaxLevel())
-                    player.getFoodData().setLevel(player.getFoodData().getMaxLevel() - 1);
-            }
-        }), 20);
     }
 
 //             旧版右键，有延迟。已迁移至监听器

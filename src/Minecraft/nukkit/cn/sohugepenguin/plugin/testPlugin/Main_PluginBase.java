@@ -33,11 +33,13 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginLogger;
+import cn.nukkit.scoreboard.data.DisplaySlot;
+import cn.nukkit.scoreboard.scoreboard.Scoreboard;
 import cn.nukkit.utils.Config;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,8 +58,8 @@ public class Main_PluginBase extends PluginBase implements Listener {
 
     public static Map<String, ArrayList<Block>> undo_map = new HashMap<>();
     static Player Plugin_player;
-    ArrayList<Vector3> v_collect = new ArrayList<>();
     static ArrayList<Player> access_p = new ArrayList<>();
+    ArrayList<Vector3> v_collect = new ArrayList<>();
     Config player_join;
 
     public static void access(Player player) {
@@ -66,47 +68,28 @@ public class Main_PluginBase extends PluginBase implements Listener {
         Plugin_player = player;
     }
 
-    private void LoadWorld() {
-        File[] listFiles = new File("worlds").listFiles();
-        //导入新世界(非家园)
-        assert listFiles != null;
-        for (File wFolder : listFiles) {
-            if (wFolder.isDirectory() && !getServer().isLevelLoaded(wFolder.getName())) {
-                if (!wFolder.getName().contains("的家园")) {
-                    getServer().loadLevel(wFolder.getName());
-                }
-            }
-        }
-    }
-
     public void onLoad() {
 //        注释文本abc
         PluginLogger log = this.getLogger();
         if (Item.fromString("np:world_menu").equals(Item.get(0))) {
-            try {
-                Entity.registerCustomEntity(new CustomClassEntityProvider(BaseNpc.def, BaseNpc.class));
-                Entity.registerCustomEntity(new CustomClassEntityProvider(Car1.def, Car1.class));
-                Entity.registerCustomEntity(new CustomClassEntityProvider(Anchor.def , Anchor.class));
-                Item.registerCustomItem(List.of(Custom_Pickaxe.class , TheWorld_Menu_Item.class,
-                        Fire_Pepper_Item.class , BuildGod_Item.class , sword_1.class , sword_2.class ,
-                        anchor_egg.class , helmets_1.class , leggings_1.class , boots_1.class , chests_1.class
-                ));
-                Block.registerCustomBlock(List.of(test_slab.class , block1.class, block2.class, block3.class, block4.class,
-                        block5.class, block6.class, block7.class, block8.class, block9.class, block10.class,
-                        block11.class, block12.class, block13.class, block14.class, block15.class, block16.class,
-                        block17.class, block18.class, block19.class, block20.class, block21.class, block22.class,
-                        block23.class, block24.class, block25.class, block26.class, block27.class, block28.class,
-                        block29.class, block30.class, block31.class, block32.class, block33.class, block34.class,
-                        block35.class, block36.class, block37.class, block38.class, block39.class, block40.class));
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                     InvocationTargetException e) {
-                log.info("§c实验性玩法插件启动失败!");
-                e.printStackTrace();
-            }
+            Entity.registerCustomEntity(new CustomClassEntityProvider(BaseNpc.def, BaseNpc.class));
+            Entity.registerCustomEntity(new CustomClassEntityProvider(Car1.def, Car1.class));
+            Entity.registerCustomEntity(new CustomClassEntityProvider(Anchor.def, Anchor.class));
+            Item.registerCustomItem(List.of(Custom_Pickaxe.class, TheWorld_Menu_Item.class,
+                    Fire_Pepper_Item.class, BuildGod_Item.class, sword_1.class, sword_2.class,
+                    anchor_egg.class, helmets_1.class, leggings_1.class, boots_1.class, chests_1.class
+            ));
+            Block.registerCustomBlock(List.of(test_slab.class, block1.class, block2.class, block3.class, block4.class,
+                    block5.class, block6.class, block7.class, block8.class, block9.class, block10.class,
+                    block11.class, block12.class, block13.class, block14.class, block15.class, block16.class,
+                    block17.class, block18.class, block19.class, block20.class, block21.class, block22.class,
+                    block23.class, block24.class, block25.class, block26.class, block27.class, block28.class,
+                    block29.class, block30.class, block31.class, block32.class, block33.class, block34.class,
+                    block35.class, block36.class, block37.class, block38.class, block39.class, block40.class));
         } else {
             Entity.registerCustomEntity(new CustomClassEntityProvider(BaseNpc.def, BaseNpc.class));
             Entity.registerCustomEntity(new CustomClassEntityProvider(Car1.def, Car1.class));
-            Entity.registerCustomEntity(new CustomClassEntityProvider(Anchor.def , Anchor.class));
+            Entity.registerCustomEntity(new CustomClassEntityProvider(Anchor.def, Anchor.class));
             log.info("§b插件新增物已加载，避免Warn已经取消方块的载入");
 
             Map<UUID, Player> online_list = Server.getInstance().getOnlinePlayers();
@@ -201,7 +184,6 @@ public class Main_PluginBase extends PluginBase implements Listener {
         }
         npc_config.save();
 
-
         this.getServer().getScheduler().scheduleRepeatingTask(this, () -> {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
             Date date = new Date(System.currentTimeMillis());
@@ -217,7 +199,7 @@ public class Main_PluginBase extends PluginBase implements Listener {
             }
 //            定时获取在线玩家列表
             Map<UUID, Player> online_list = Server.getInstance().getOnlinePlayers();
-             online_players = new ArrayList<>();
+            online_players = new ArrayList<>();
             if (online_list.size() > 0) {
                 Iterator<UUID> keyIterator = online_list.keySet().iterator();
                 for (int i = 0; i < online_list.size(); i++) {
@@ -226,15 +208,15 @@ public class Main_PluginBase extends PluginBase implements Listener {
                 }
             }
 //            reload后一键添加空对象（创世神）
-            if(build_map.size() ==0){
+            if (build_map.size() == 0) {
                 for (Player online_player : online_players) {
-                    build_map.put(online_player.getName(),new ArrayList<>());
+                    build_map.put(online_player.getName(), new ArrayList<>());
                 }
             }
 
-            if(undo_map.size() ==0){
+            if (undo_map.size() == 0) {
                 for (Player online_player : online_players) {
-                   undo_map.put(online_player.getName(),new ArrayList<>());
+                    undo_map.put(online_player.getName(), new ArrayList<>());
                 }
             }
 
@@ -260,9 +242,26 @@ public class Main_PluginBase extends PluginBase implements Listener {
                     } else {
                         Biomes = Biome.getBiome(BiomesList[list_idr]).getName();
                     }
-                    p.sendActionBar("§6群系：" + Biomes + " §aPing：" + p.getPing() + "ms"
-                            + "\n§c方块：" + TargetBlock + " (" + ID + ":" + ID_DATA + ")"
-                            + "\n§b手持：" + p.getInventory().getItemInHand().getName() + " ID：" + p.getInventory().getItemInHand().getId());
+                    //玩家独立显示积分榜
+                    Scoreboard showInfo = new Scoreboard("playerInfo", "§o§6mc.zj.cn");
+                    List<String> line = new ArrayList<>();
+                    line.add("§b群系： §f" + Biomes + " ");
+                    line.add("§aPing： §f" + p.getPing() + "ms ");
+                    line.add("§c世界： §f" + p.getLevelName() + " ");
+                    line.add("§d玩家： §f" + online_players.size() + " / " + p.getServer().getMaxPlayers());
+                    line.add("§e金币： §f0 ");
+                    showInfo.setLines(line);
+
+                    p.removeScoreboard(showInfo);
+                    p.display(showInfo, DisplaySlot.SIDEBAR);
+
+                    showInfo.removeAllLine(false);
+                    showInfo.resend();
+                    //resend();向所有观察者重新发送此计分板以及行信息
+                    //例如当对计分板进行了大量的更改后，调用此方法可节省大量带宽
+
+                    p.sendTip("§c准心：" + TargetBlock + " (" + ID + ":" + ID_DATA + ")"
+                            + "    §b手持：" + p.getInventory().getItemInHand().getName() + " ID：" + p.getInventory().getItemInHand().getId());
                 }
             }
 
@@ -332,7 +331,7 @@ public class Main_PluginBase extends PluginBase implements Listener {
         }, 10);
     }
 
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, @NotNull Command command, String label, String[] args) {
         Player p = (Player) sender;
         if (command.getName().equals("get")) {
             boolean NewPlayer = true;
@@ -376,10 +375,10 @@ public class Main_PluginBase extends PluginBase implements Listener {
             p.showFormWindow(getBuildWindow());
         }
 
-        if (command.getName().equals("biomes")){
+        if (command.getName().equals("biomes")) {
             //player.onChunkChanged(FullChunk c)  SuperIce666推荐，发送区块更新到玩家；
-            int x = p.getChunkX(),z=p.getChunkZ();
-            if(args.length==1 && !Objects.equals(args[0], "list")) {
+            int x = p.getChunkX(), z = p.getChunkZ();
+            if (args.length == 1 && !Objects.equals(args[0], "list")) {
                 byte id = Byte.parseByte(args[0]);
                 for (int i = 0; i < 16; i++) {
                     for (int j = 0; j < 16; j++) {
@@ -389,7 +388,7 @@ public class Main_PluginBase extends PluginBase implements Listener {
                 }
 //                    p.getServer().getLevel(p.getLevel().getId()).generateChunk(x,z);  //重载区块
                 p.onChunkChanged(p.getChunk());
-            } else if (args.length==1 && args[0].equals("list")) {
+            } else if (args.length == 1 && args[0].equals("list")) {
                 p.sendMessage(Arrays.toString(Objects.requireNonNull(p.getChunk()).getBiomeIdArray()));
                 StringBuilder BiomesList = new StringBuilder();
                 for (int i = 0; i < Biome.unorderedBiomes.size(); i++) {
@@ -397,32 +396,35 @@ public class Main_PluginBase extends PluginBase implements Listener {
                 }
                 p.sendMessage("§b群系列表：\n" + BiomesList);
                 p.sendMessage("你所在块的群系为： " + Biome.getBiome(p.getLevel().getBiomeId(x, z)).getName());
-            }else p.sendMessage("§a/Biomes list 列出已有全部群系类型ID\n§b/Biomes [ID] 将你所在的区块改为对应id类型的群系");
+            } else
+                p.sendMessage("§a/Biomes list 列出已有全部群系类型ID\n§b/Biomes [ID] 将你所在的区块改为对应id类型的群系");
         }
 
         if (command.getName().equals("round")) {
-            if(args.length==1){
+            if (args.length == 1) {
                 p.sendMessage("你好像没有写要填充什么方块吗？仔细看看哦");
-            }else if(args.length>1){
+            } else if (args.length > 1) {
                 p.sendMessage("§c严禁使用下落方块，掉落物，液体！否则立马删除OP!不管你是谁！");
-                round(p,args);
-            }else p.sendMessage("画圆指令用法：/round 半径(整数，必选) 方块ID(必选) 方块特殊值（可选）keep(保持，可选，使用时，方块特殊值必须要写)");
+                round(p, args);
+            } else
+                p.sendMessage("画圆指令用法：/round 半径(整数，必选) 方块ID(必选) 方块特殊值（可选）keep(保持，可选，使用时，方块特殊值必须要写)");
         }
 
         if (command.getName().equals("ball")) {
-            if(args.length==1){
+            if (args.length == 1) {
                 p.sendMessage("你好像没有写要填充什么方块吗？仔细看看哦");
-            }else if(args.length>1){
+            } else if (args.length > 1) {
                 p.sendMessage("§c严禁使用下落方块，掉落物，液体！否则立马删除OP!不管你是谁！");
                 SayCommand.broadcastCommandMessage(sender, "§a" + p.getName() + "使用了" + Arrays.toString(args));
-                ball(p,args);
-            }else p.sendMessage("画球指令用法：/ball 半径(整数，必选) 方块ID(必选) 方块特殊值（可选）keep(保持，可选，使用时，方块特殊值必须要写)");
+                ball(p, args);
+            } else
+                p.sendMessage("画球指令用法：/ball 半径(整数，必选) 方块ID(必选) 方块特殊值（可选）keep(保持，可选，使用时，方块特殊值必须要写)");
         }
 
         if (command.getName().equals("zoom") && args.length == 2) {
             p = this.getServer().getPlayer(args[0]);
             float a = Float.parseFloat(args[1]);
-            if ((double)a >= 0.5 && a <= 3.0F) {
+            if ((double) a >= 0.5 && a <= 3.0F) {
                 p.setScale(a);
                 sender.sendMessage("§a§mSuccess!");
                 p.sendMessage("§b§m你的身体已被缩放！");
@@ -454,22 +456,22 @@ public class Main_PluginBase extends PluginBase implements Listener {
         }
 
         if (command.getName().equals("ping")) {
-            p = (Player)sender;
+            p = (Player) sender;
             String device;
             if (args.length == 0) {
-                if(p.getLoginChainData().getDeviceOS() ==7){
-                     device = "PC端";
-                }else {
-                     device ="移动端";
+                if (p.getLoginChainData().getDeviceOS() == 7) {
+                    device = "PC端";
+                } else {
+                    device = "移动端";
                 }
                 p.sendMessage("§b§mPort: " + p.getPort() + "§a\nPing: " + p.getPing() + "§6ms\n你正在 " +
-                       device + " 上玩我的世界！");
+                        device + " 上玩我的世界！");
             } else {
                 p.sendMessage("§m/ping");
             }
 
-            Car1 anchor =  new Car1(p.getLocation().getChunk(), Entity.getDefaultNBT(p.getPosition())
-                    .putString("account","null")
+            Car1 anchor = new Car1(p.getLocation().getChunk(), Entity.getDefaultNBT(p.getPosition())
+                    .putString("account", "null")
                     .putCompound("Skin", (new CompoundTag()))
             );
             anchor.spawnToAll();
@@ -478,9 +480,9 @@ public class Main_PluginBase extends PluginBase implements Listener {
         }
 
         if (command.getName().equals("achievement")) {
-            p = (Player)sender;
+            p = (Player) sender;
             if (args.length == 0) {
-                p.sendMessage("§g§m你的成就列表:\n" + ((Player)sender).achievements);
+                p.sendMessage("§g§m你的成就列表:\n" + ((Player) sender).achievements);
             } else if (args.length == 2 && args[1].equals("clear")) {
                 p = this.getServer().getPlayer(args[0]);
                 if (p == sender) {
@@ -524,6 +526,11 @@ public class Main_PluginBase extends PluginBase implements Listener {
 
         if (command.getName().equals("set")) {
             sender.sendMessage("现已改为/do");
+        }
+
+        if (command.getName().equals("map")) {
+            assert p != null;
+            System.out.println("aaa");
         }
 
         return true;

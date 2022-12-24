@@ -19,6 +19,7 @@ public class test_slab extends Block implements CustomBlock {
     public final BooleanBlockProperty BRIDGE_TOP_SLOT_BIT = new BooleanBlockProperty("bridge:top_slot_bit", false);
     public final BooleanBlockProperty BRIDGE_IS_FULL_BIT = new BooleanBlockProperty("bridge:is_full_bit", false);
 
+    @NotNull
     @Override
     public String getNamespaceId() {
         return "blocklynukkit:blue_mahoe_slab";
@@ -86,41 +87,49 @@ public class test_slab extends Block implements CustomBlock {
                                             .putInt("molang_version", 6))));
                 });
     }
+
     //Block digging takes time
     @Override
     public double calculateBreakTime(@NotNull Item item, @Nullable Player player) {
         return 3;
     }
+
     //Block friction factor
     @Override
     public double getFrictionFactor() {
         return 0.1;
     }
+
     //Block explosion resistance
     @Override
     public double getResistance() {
         return 5;
     }
+
     //Block emit light level
     @Override
     public int getLightLevel() {
         return 15;
     }
+
     //Block absorb light level
     @Override
     public int getLightFilter() {
         return 15;
     }
+
     //burn ability
     @Override
     public int getBurnAbility() {
         return 0;
     }
+
     //burn chance
     @Override
     public int getBurnChance() {
         return 0;
     }
+
     //Block item max stack size
     @Override
     public int getItemMaxStackSize() {

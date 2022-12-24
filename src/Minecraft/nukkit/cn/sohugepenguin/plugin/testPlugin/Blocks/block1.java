@@ -13,12 +13,13 @@ import org.jetbrains.annotations.Nullable;
 
 public class block1 extends Block implements CustomBlock {
 
+    @NotNull
     @Override
     public String getNamespaceId() {
         return "np:color_block1";
     }
 
-   @Override
+    @Override
     public CustomBlockDefinition getDefinition() {
         return CustomBlockDefinition
                 .builder(this, "color_block1")//texture name
@@ -64,7 +65,7 @@ public class block1 extends Block implements CustomBlock {
 
     @Override
     public BlockColor getColor() {
-        return new BlockColor(180,28,48);
+        return new BlockColor(180, 28, 48);
     }
 
     //阻力

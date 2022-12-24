@@ -9,10 +9,11 @@ public class Npc_information extends FormWindowSimple {
     public Npc_information(String text) {
         super("§cNPC§6管理系统", text);
     }
-    public static FormWindowSimple getNpc_information(Player p){
+
+    public static FormWindowSimple getNpc_information(Player p) {
         StringBuilder text = new StringBuilder();
-        for(int i = 0; i <Npc_HuTao.PlayerList.size() ; i++) {
-            if(p.getName().equals(Npc_HuTao.PlayerList.get(i))) {
+        for (int i = 0; i < Npc_HuTao.PlayerList.size(); i++) {
+            if (p.getName().equals(Npc_HuTao.PlayerList.get(i))) {
                 BaseNpc baseNpc = Npc_HuTao.PlayerTargetEntityList.get(i);
 
                 text.append("UUID序列号：").append(baseNpc.namedTag.get("account")).

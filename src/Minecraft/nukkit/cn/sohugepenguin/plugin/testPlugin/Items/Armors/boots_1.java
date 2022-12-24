@@ -9,7 +9,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 
 import java.util.List;
 
-public class boots_1 extends ItemCustomArmor{
+public class boots_1 extends ItemCustomArmor {
     public boots_1() {
         super("np:boot_1", "§d紫水晶护靴", "amethyst_boots");
     }
