@@ -14,7 +14,7 @@ import java.util.zip.ZipFile;
 public class SkyBlockWorld_Zip_out_to_File {
     //zipPath zip文件目录
     //descDir 指定目录
-    public static void Zip_Compress(Player player, String zipPath, String descDir) throws IOException {
+    public static void Zip_Compress(String zipPath, String descDir) throws IOException {
         unZipFiles(new File(zipPath), descDir);
     }
 

@@ -46,6 +46,7 @@ public class Npc_Setting_Skin extends FormWindowSimple {
                 skin.setSkinResourcePatch(GEOMETRY_CUSTOM);
                 human.skin = skin;
                 human.spawnToAll();
+                //客户端渲染更新
                 p.getServer().updatePlayerListData(human.getUniqueId(), human.getId(), human.getName(), human.getSkin());
                 p.getServer().removePlayerListData(human.getUniqueId());
 

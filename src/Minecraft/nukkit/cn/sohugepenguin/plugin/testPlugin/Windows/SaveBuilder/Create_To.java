@@ -9,7 +9,7 @@ import java.io.File;
 
 public class Create_To extends FormWindowSimple {
     public Create_To() {
-        super("保存文件·菜单", "");
+        super("§m§b保存文件·菜单", "");
     }
 
     public static FormWindowSimple Create_Yml_To(String text) {

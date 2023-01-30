@@ -61,8 +61,8 @@ public class Car1 extends Entity implements CustomEntity, EntityRideable {
             for (Player p : online_players) {
                 if (p.riding == this) {
                     if (this.my != 0) {
-                        Vector3 run = BVector3.fromLocation(this.getLocation(), this.my * 0.15).getPos();
-                        Vector3 run2 = BVector3.fromLocation(this.getLocation(), 1).getPos();
+                        Vector3 run = BVector3.fromLocation(this.getLocation(), this.my * 0.15).getDirectionVector();
+                        Vector3 run2 = BVector3.fromLocation(this.getLocation(), 1).getDirectionVector();
                         if (this.getLevel().getBlock(new Vector3(this.getLocation().x + run2.x, p.getLocation().y + 1, this.getLocation().z + run2.z)).getId() != 0 &&
                                 this.getLevel().getBlock(new Vector3(this.getLocation().x + run2.x, p.getLocation().y + 2, this.getLocation().z + run2.z)).getId() == 0) {
                             this.fastMove(0, 0.1, 0);

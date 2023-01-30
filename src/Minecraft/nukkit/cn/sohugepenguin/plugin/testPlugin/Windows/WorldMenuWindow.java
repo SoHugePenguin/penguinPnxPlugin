@@ -11,7 +11,7 @@ import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Main_PluginBas
 public class WorldMenuWindow extends FormWindowSimple {
 
     public WorldMenuWindow() {
-        super("§l§6§ka§ca§ba§da§aa§4a§7a§1a §r§m§g| WORLD MENU |§l§6§ka§1a§7a§aa§da§ba§ca§6a", "§l§a世界时间：" + date_show + " §l§6我的世界、无尽可能！");
+        super("§m§b§ka§ca§ba§da§aa§4a§7a§1a §r§m§g| WORLD MENU |§l§6§ka§1a§7a§aa§da§ba§ca§6a", "§l§a世界时间：" + date_show + " §l§6我的世界、无尽可能！");
     }
 
     public static void getWindowSimple(Player p) {

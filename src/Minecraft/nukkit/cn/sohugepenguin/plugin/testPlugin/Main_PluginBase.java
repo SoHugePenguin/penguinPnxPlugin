@@ -4,6 +4,7 @@ import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Blocks.*;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Entity.Anchor;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Entity.BaseNpc;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Entity.Car1;
+import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Entity.WoodenBox;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Armors.boots_1;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Armors.chests_1;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Armors.helmets_1;
@@ -12,8 +13,8 @@ import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Custom_Pickaxe;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Edibles.Fire_Pepper_Item;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Saber.sword_1;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Saber.sword_2;
+import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Summon_egg.WoodenBox_egg;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Summon_egg.anchor_egg;
-import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Summon_egg.anchor_information;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Tools.BuildGod_Item;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Tools.TheWorld_Menu_Item;
 import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Build_Item_Win.Coordinate_sorting;
@@ -31,13 +32,13 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.particle.RedstoneParticle;
 import cn.nukkit.math.Vector3;
-import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginLogger;
 import cn.nukkit.scoreboard.data.DisplaySlot;
 import cn.nukkit.scoreboard.scoreboard.Scoreboard;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
+import me.onebone.economyapi.EconomyAPI;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -45,6 +46,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.*;
 
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Tool.ball_tool.ball;
@@ -52,6 +54,7 @@ import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Tool.round_too
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Build_Item_Win.Build_Menu.getBuildWindow;
 
 public class Main_PluginBase extends PluginBase implements Listener {
+    private static Main_PluginBase main;
     public static String date_show;  //时间显示
     public static ArrayList<Player> online_players = new ArrayList<>(); //在线玩家列表
 
@@ -63,12 +66,21 @@ public class Main_PluginBase extends PluginBase implements Listener {
     ArrayList<Vector3> v_collect = new ArrayList<>();
     Config player_join;
 
+    public Main_PluginBase() {
+        main = this;
+    }
+
     public static void access(Player player) {
         access_p = new ArrayList<>();
         access_p.add(player);
         Plugin_player = player;
     }
 
+    public static Main_PluginBase getMain() {
+        return main;
+    }
+
+    @Override
     public void onLoad() {
 //        注释文本abc
         PluginLogger log = this.getLogger();
@@ -76,9 +88,10 @@ public class Main_PluginBase extends PluginBase implements Listener {
             Entity.registerCustomEntity(new CustomClassEntityProvider(BaseNpc.def, BaseNpc.class));
             Entity.registerCustomEntity(new CustomClassEntityProvider(Car1.def, Car1.class));
             Entity.registerCustomEntity(new CustomClassEntityProvider(Anchor.def, Anchor.class));
+            Entity.registerCustomEntity(new CustomClassEntityProvider(WoodenBox.def, WoodenBox.class));
             Item.registerCustomItem(List.of(Custom_Pickaxe.class, TheWorld_Menu_Item.class,
                     Fire_Pepper_Item.class, BuildGod_Item.class, sword_1.class, sword_2.class,
-                    anchor_egg.class, helmets_1.class, leggings_1.class, boots_1.class, chests_1.class
+                    anchor_egg.class, WoodenBox_egg.class, helmets_1.class, leggings_1.class, boots_1.class, chests_1.class
             ));
             Block.registerCustomBlock(List.of(test_slab.class, block1.class, block2.class, block3.class, block4.class,
                     block5.class, block6.class, block7.class, block8.class, block9.class, block10.class,
@@ -105,6 +118,7 @@ public class Main_PluginBase extends PluginBase implements Listener {
         }
     }
 
+    @Override
     public void onEnable() {
         //世界不用就不加载，减少负载
         File BaseFile = new File("penguin_plugin");
@@ -211,7 +225,7 @@ public class Main_PluginBase extends PluginBase implements Listener {
 
 
             if (online_players.size() > 0) {
-                String TargetBlock, Biomes;
+                String TargetBlock;
                 int ID, ID_DATA;
                 for (Player p : online_players) {
                     if (p.getTargetBlock(5) == null) {
@@ -226,19 +240,16 @@ public class Main_PluginBase extends PluginBase implements Listener {
 
                     byte[] BiomesList = Objects.requireNonNull(p.getChunk()).getBiomeIdArray();
                     int list_idr = (int) (p.getX() - p.getChunkX() * 16) * 16 + (int) (p.getZ() - p.getChunkZ() * 16);
-                    if (BiomesList[list_idr] < 0) {
-                        Biomes = Biome.getBiome(p.getLevel().getBiomeId(p.getChunkX(), p.getChunkZ())).getName();
-                    } else {
-                        Biomes = Biome.getBiome(BiomesList[list_idr]).getName();
-                    }
                     //玩家独立显示积分榜
                     Scoreboard showInfo = new Scoreboard("playerInfo", "§o§6mc.zj.cn");
                     List<String> line = new ArrayList<>();
-                    line.add("§b群系： §f" + Biomes + " ");
-                    line.add("§aPing： §f" + p.getPing() + "ms ");
                     line.add("§c世界： §f" + p.getLevelName() + " ");
+                    line.add("§b坐标： §f" + (p.x > 0 ? (int) p.x : (int) p.x - 1) +
+                            "," + (p.y > 0 ? (int) p.y : (int) p.y - 1) +
+                            "," + (p.z > 0 ? (int) p.z : (int) p.z - 1));
+                    line.add("§e金币：§6" + new DecimalFormat("0.00").format(EconomyAPI.getInstance().myMoney(p)) + "$");
                     line.add("§d玩家： §f" + online_players.size() + " / " + p.getServer().getMaxPlayers());
-                    line.add("§e金币： §f0 ");
+                    line.add("§aPing： §f" + p.getPing() + "ms ");
                     showInfo.setLines(line);
 
                     p.removeScoreboard(showInfo);
@@ -250,7 +261,7 @@ public class Main_PluginBase extends PluginBase implements Listener {
                     //例如当对计分板进行了大量的更改后，调用此方法可节省大量带宽
 
                     p.sendTip("§c准心：" + TargetBlock + " (" + ID + ":" + ID_DATA + ")"
-                            + "    §b手持：" + p.getInventory().getItemInHand().getName() + " ID：" + p.getInventory().getItemInHand().getId());
+                            + "\n§b手持：" + p.getInventory().getItemInHand().getName() + " ID： " + p.getInventory().getItemInHand().getId());
                 }
             }
 
@@ -318,6 +329,7 @@ public class Main_PluginBase extends PluginBase implements Listener {
         }, 10);
     }
 
+    @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, String label, String[] args) {
         if (sender.isPlayer()) {
             Player p = (Player) sender;
@@ -457,14 +469,6 @@ public class Main_PluginBase extends PluginBase implements Listener {
                 } else {
                     p.sendMessage("§m/ping");
                 }
-
-                Car1 anchor = new Car1(p.getLocation().getChunk(), Entity.getDefaultNBT(p.getPosition())
-                        .putString("account", "null")
-                        .putCompound("Skin", (new CompoundTag()))
-                );
-                anchor.spawnToAll();
-                p.sendMessage(String.valueOf(anchor_information.name));
-                p.sendMessage(String.valueOf(anchor_information.vector3));
             }
 
             if (command.getName().equals("achievement")) {
@@ -523,9 +527,9 @@ public class Main_PluginBase extends PluginBase implements Listener {
 
             if (command.getName().equals("map")) {
                 assert p != null;
-                //物品栏名字显示
-                p.sendPopup("aaa");
+                p.sendMessage(String.valueOf(p.getLevel().getChunk(p.getChunkX(), p.getChunkZ()).isNether()));
             }
+
         } else {
             sender.sendMessage(TextFormat.colorize('&', "&o&c请不要用控制台执行"));
         }

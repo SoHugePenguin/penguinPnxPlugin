@@ -25,9 +25,8 @@ public class anchor_egg extends ItemCustomTool {
     @Override
     public CustomItemDefinition getDefinition() {
         return CustomItemDefinition
-                .toolBuilder(this, ItemCreativeCategory.EQUIPMENT)
-                .addRepairItems(List.of(Item.fromString("minecraft:amethyst_shard")), 100)
-                .addRepairItems(List.of(Item.fromString("yes:amethyst_spear")), 400)
+                .toolBuilder(this, ItemCreativeCategory.NATURE)
+                .creativeGroup("itemGroup.name.mobEgg")
                 .creativeGroup("itemGroup.name.sword")
                 .allowOffHand(false)
                 .handEquipped(true)

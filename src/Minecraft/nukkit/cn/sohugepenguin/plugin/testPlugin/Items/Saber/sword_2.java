@@ -2,7 +2,6 @@ package Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Items.Saber;
 
 import cn.nukkit.blockstate.BlockState;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.customitem.CustomItemDefinition;
 import cn.nukkit.item.customitem.ItemCustomTool;
 import cn.nukkit.item.customitem.data.ItemCreativeCategory;
@@ -39,15 +38,14 @@ public class sword_2 extends ItemCustomTool {
     }
 
     @Override
-    public int getMaxDurability() {
-        return ItemTool.DURABILITY_STONE;
-    }
-
-    @Override
     public boolean isPickaxe() {
         return true;
     }
 
+    @Override
+    public boolean isUnbreakable() {
+        return true;
+    }
 
     @Override
     public int getAttackDamage() {

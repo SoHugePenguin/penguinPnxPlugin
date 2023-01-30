@@ -1,5 +1,6 @@
 package Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Entity;
 
+import Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Main_PluginBase;
 import cn.nukkit.Player;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.custom.CustomEntity;
@@ -19,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Main_PluginBase.online_players;
 import static Minecraft.nukkit.cn.sohugepenguin.plugin.testPlugin.Windows.Create_NPC.Npc_HuTao.HuTao_Windows;
@@ -136,42 +139,32 @@ public class BaseNpc extends EntityHuman implements CustomEntity {
         if (add) {
             onlineNpcList.add(this);
         }
+        Map<UUID, Player> onlinePlayers = Main_PluginBase.getMain().getServer().getOnlinePlayers();
         Player p;
-        int idr = 0;
+        UUID idr = null;
         this.addEffect((new Effect(11, "test", 0, 0, 0, false)).setDuration(20).setAmplifier(5).setAmbient(true));
-        if (online_players.size() > 0) {
-            ArrayList<Double> length = new ArrayList<>();
-            for (Player online_player : online_players) {
-                p = online_player;
-                double dx = (p.x - this.x);
-                double dy = (p.y - this.y);
-                double dz = (p.z - this.z);
+        if (onlinePlayers.size() > 0) {
+            double length = 200;
+            for (UUID uuid : onlinePlayers.keySet()) {
+                p = getServer().getOnlinePlayers().get(uuid);
+                if (idr == null) {
+                    idr = p.getUniqueId();
+                }
+                double dx = (p.x - this.x), dy = (p.y - this.y), dz = (p.z - this.z);
                 double l = dx * dx + dy * dy + dz * dz;
-                if (l < 200) {
-                    length.add(l);
-                } else length.add(300D);
-            }
-            for (int j = 0; j < length.size(); j++) {
-                if (length.get(j) < length.get(idr)) {
-                    idr = j;
+                if (l < 200 && l < length) {
+                    length = l;
+                    idr = uuid;
                 }
             }
-            if (length.get(idr) < 200) {
-                for (int k = 0; k < idr + 1; k++) {
-                    if (k == idr) {
-                        p = online_players.get(k);
-                        double dx = this.x - p.x;
-                        double dy = this.y - p.y;
-                        double dz = this.z - p.z;
-                        double yaw = Math.asin(dx / Math.sqrt(dx * dx + dz * dz)) / Math.PI * 180.0D;
-                        double pitch = Math.round(Math.asin(dy / Math.sqrt(dx * dx + dz * dz + dy * dy)) / Math.PI * 180.0D);
-                        if (dz > 0.0D) {
-                            yaw = -yaw + 180.0D;
-                        }
-                        this.yaw = yaw;
-                        this.pitch = pitch;
-                    }
-                }
+            if (idr != null) {
+                p = onlinePlayers.get(idr);
+                double dx = this.x - p.x, dy = this.y - p.y, dz = this.z - p.z;
+                double yaw = Math.asin(dx / Math.sqrt(dx * dx + dz * dz)) / Math.PI * 180.0D;
+                double pitch = Math.round(Math.asin(dy / Math.sqrt(dx * dx + dz * dz + dy * dy)) / Math.PI * 180.0D);
+                if (dz > 0.0D) yaw = -yaw + 180.0D;
+                this.yaw = yaw;
+                this.pitch = pitch;
             }
         }
         return alive;

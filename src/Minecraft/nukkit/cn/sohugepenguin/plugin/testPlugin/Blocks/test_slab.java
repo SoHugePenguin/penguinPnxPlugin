@@ -4,14 +4,11 @@ import cn.nukkit.Player;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.customblock.CustomBlock;
 import cn.nukkit.block.customblock.CustomBlockDefinition;
-import cn.nukkit.block.customblock.data.Permutation;
-import cn.nukkit.block.customblock.data.Permutations;
+import cn.nukkit.block.customblock.data.*;
 import cn.nukkit.blockproperty.BlockProperties;
 import cn.nukkit.blockproperty.BooleanBlockProperty;
 import cn.nukkit.item.Item;
 import cn.nukkit.math.BlockFace;
-import cn.nukkit.math.Vector3f;
-import cn.nukkit.nbt.tag.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,46 +43,30 @@ public class test_slab extends Block implements CustomBlock {
     @Override
     public CustomBlockDefinition getDefinition() {
         return CustomBlockDefinition
-                .builder(this, "color_block1")//texture name
-                .geometry("geometry.custom_slab")//geometry name
-                .permutations(new Permutations(//permutation data
-                        Permutation.builder()
-                                .collision_box_enabled(true)
-                                .collision_box_origin(new Vector3f(-8, 0, -8))
-                                .collision_box_size(new Vector3f(16, 8, 16))
-                                .selection_box_enabled(true)
-                                .selection_box_origin(new Vector3f(-8, 0, -8))
-                                .selection_box_size(new Vector3f(16, 8, 16))
-                                .condition("query.block_property('bridge:top_slot_bit') == false && query.block_property('bridge:is_full_bit') == false"),
-                        Permutation.builder()
-                                .collision_box_enabled(true)
-                                .collision_box_origin(new Vector3f(-8, 8, -8))
-                                .collision_box_size(new Vector3f(16, 16, 16))
-                                .selection_box_enabled(true)
-                                .selection_box_origin(new Vector3f(-8, 8, -8))
-                                .selection_box_size(new Vector3f(16, 16, 16))
-                                .condition("query.block_property('bridge:top_slot_bit') == true && query.block_property('bridge:is_full_bit') == false"),
-                        Permutation.builder()
-                                .collision_box_enabled(true)
-                                .collision_box_origin(new Vector3f(-8, 0, -8))
-                                .collision_box_size(new Vector3f(16, 16, 16))
-                                .selection_box_enabled(true)
-                                .selection_box_origin(new Vector3f(-8, 0, -8))
-                                .selection_box_size(new Vector3f(16, 16, 16))
-                                .condition("query.block_property('bridge:is_full_bit') == true")
-                ))
-                .customBuild((nbt) -> {//custom processing result compound
-                    nbt.getCompound("components").putCompound("minecraft:part_visibility", new CompoundTag()
-                            .putCompound("boneConditions", new CompoundTag()
-                                    .putCompound("lower", new CompoundTag()
-                                            .putString("bone_condition", "!query.block_property('bridge:top_slot_bit') || query.block_property('bridge:is_full_bit')")
-                                            .putString("bone_name", "lower")
-                                            .putInt("molang_version", 6))
-                                    .putCompound("upper", new CompoundTag()
-                                            .putString("bone_condition", "query.block_property('bridge:top_slot_bit') || query.block_property('bridge:is_full_bit')")
-                                            .putString("bone_name", "upper")
-                                            .putInt("molang_version", 6))));
-                });
+                .builder(this, "blue_mahoe_planks")
+                .geometry("geometry.custom_slab")
+                .permutations(
+                        new Permutation(Component.builder()
+                                .collisionBox(new CollisionBox(-8, 0, -8, 16, 8, 16))
+                                .selectionBox(new SelectionBox(-8, 0, -8, 16, 8, 16))
+                                .build(),
+                                "query.block_property('bridge:top_slot_bit') == false && query.block_property('bridge:is_full_bit') == false"),
+                        new Permutation(Component.builder()
+                                .collisionBox(new CollisionBox(-8, 8, -8, 16, 16, 16))
+                                .selectionBox(new SelectionBox(-8, 8, -8, 16, 16, 16))
+                                .build(),
+                                "query.block_property('bridge:top_slot_bit') == true && query.block_property('bridge:is_full_bit') == false"),
+                        new Permutation(Component.builder()
+                                .collisionBox(new CollisionBox(-8, 0, -8, 16, 16, 16))
+                                .selectionBox(new SelectionBox(-8, 0, -8, 16, 16, 16))
+                                .build(),
+                                "query.block_property('bridge:is_full_bit') == true")
+                )
+                .partVisibility(
+                        new BoneCondition("lower", "lower", "!query.block_property('bridge:top_slot_bit') || query.block_property('bridge:is_full_bit')"),
+                        new BoneCondition("upper", "upper", "query.block_property('bridge:top_slot_bit') || query.block_property('bridge:is_full_bit')")
+                )
+                .build();
     }
 
     //Block digging takes time

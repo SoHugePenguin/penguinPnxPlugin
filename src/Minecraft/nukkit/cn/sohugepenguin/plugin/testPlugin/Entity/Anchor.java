@@ -71,7 +71,6 @@ public class Anchor extends Entity implements CustomEntity {
         } else this.yaw -= 0.1;
 
         if (Math.abs(this.dx - this.x) > 0.2 || Math.abs(this.dy - this.y) > 0.2 || Math.abs(this.dz - this.z) > 0.2) {
-            System.out.println("qwq?");
             this.x = this.dx;
             this.y = this.dy;
             this.z = this.dz;

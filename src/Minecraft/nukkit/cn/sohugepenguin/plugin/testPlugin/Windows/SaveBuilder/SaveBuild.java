@@ -11,7 +11,7 @@ import java.util.List;
 
 public class SaveBuild extends FormWindowCustom {
     public SaveBuild(List<Element> elements) {
-        super("保存文件·菜单", elements);
+        super("§m§b保存文件·菜单", elements);
     }
 
     public static FormWindowCustom Create_Yml() {

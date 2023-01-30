@@ -53,7 +53,7 @@ public class CreateHome extends FormWindowSimple {
                 if (!Files.exists(world_data)) {
                     try {
                         Files.copy(Objects.requireNonNull(CreateHome.class.getClassLoader().getResourceAsStream("resources/SkyBlock_Home_Event.yml")), world_data);
-                        Zip_Compress(p, "penguin_plugin\\SkyBlock_World\\SkyBlock_Home.zip", "worlds\\" + p.getName() + "的家园");
+                        Zip_Compress("penguin_plugin\\SkyBlock_World\\SkyBlock_Home.zip", "worlds\\" + p.getName() + "的家园");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
