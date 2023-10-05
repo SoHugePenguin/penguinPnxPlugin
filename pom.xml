@@ -4,22 +4,146 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.sohugepenguin.plugin</groupId>
-    <artifactId>Penguin_Plugin</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
-
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
+    <groupId>com.penguin</groupId>
+    <artifactId>PenguinPnx</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>cn.powernukkitx</groupId>
             <artifactId>powernukkitx</artifactId>
-            <version>1.19.40-r3</version>
-            <scope>system</scope>
-            <systemPath>"F:\server_test\powernukkitx-1.19.40-r2-dev-only.jar"</systemPath>
+            <version>1.20.30-r1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cn.powernukkitx.PowerNukkitX-Network</groupId>
+                    <artifactId>raknet</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.nukkitx</groupId>
+                    <artifactId>natives</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cn.powernukkitx</groupId>
+                    <artifactId>libdeflate-java</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cn.powernukkitx</groupId>
+                    <artifactId>Terra-Binary</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/me.onebone/economyapi -->
+        <dependency>
+            <groupId>pnx.encoomyApi</groupId>
+            <artifactId>EconomyAPI</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.15.2</version>
+            <!--            致命小可爱，下面这个傻逼东西导致传递依赖错误，导致ClassDefNotFound-->
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.datatype</groupId>
+                    <artifactId>jackson-datatype-jsr310</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.28</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>2.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <!--                    解决部分插件必须要用胖jar才能运行否则ClassDefNotFound-->
+                    <execution>
+                        <id>create-shaded-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <!--                            重命名字节码，防止多插件间相同依赖冲突-->
+                            <!--                            Unsupported class file major version 63只是提醒，jar包确实已经导出来了，用shade版的-->
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.fasterxml.jackson</pattern>
+                                    <!--                                                  这里记得改名成不同插件不同名字的不然还是会冲突！！！-->
+                                    <shadedPattern>com.penguin.shaded.jackson</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <artifactSet>
+                                <includes>
+                                    <!-- 将特定的依赖项写在这里 -->
+                                    <include>com.fasterxml.jackson.core:*</include>
+                                    <include>com.fasterxml.jackson.dataformat:*</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <!--  如有需要可以再次过滤-->
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>module-info.class</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
