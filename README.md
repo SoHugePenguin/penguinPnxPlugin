@@ -8,4 +8,4 @@
 <a href="https://github.com/Starry-Wind/StarRailAssistant/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Starry-Wind/StarRailAssistant" />
 </a>
-[![Star History Chart](https://api.star-history.com/svg?repos=SoHugePenguin/penguinPnxPlugin&type=Date)](https://star-history.com/#SoHugePenguin/penguinPnxPlugin&Date)
+![image](https://star-history.com/#SoHugePenguin/penguinPnxPlugin&Date)
